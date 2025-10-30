@@ -12,6 +12,21 @@ class UserController extends BaseController<Request>{
     super(req, res, next);
   }
 
+
+  /***************************************************
+   * Reset Password Controller 
+   * @body {
+   *    fullName: string
+   *    email: string
+   *    deviceId: string
+   *    password: string
+   *    gender: string
+   *    age: string
+   *    mobile: string
+   * }
+   * @returns 
+   **************************************************/
+
   async login() {
     try {
       const processBody = ["email", "password", "deviceId"];
@@ -38,6 +53,20 @@ class UserController extends BaseController<Request>{
       this.res.send({status: false, message: error});
     }
   }
+
+
+  /***************************************************
+   * Reset Password Controller 
+   * @body {
+   *    fullName: string
+   *    email: string
+   *    password: string
+   *    gender: string
+   *    age: string
+   *    mobile: string
+   * }
+   * @returns 
+   **************************************************/
 
   async register() {
     try{
@@ -73,6 +102,15 @@ class UserController extends BaseController<Request>{
     CommonService.handleResponse(this.res, "USER_NOT_FOUND", HTTP_CODE.NOT_FOUND_CODE, HTTP_CODE.FAILED)
   }
 
+
+  /**************************************************
+   * Reset Password Controller
+   * @body {
+   *    email: string
+   * }
+   * @returns
+   **************************************************/
+
   async forgetPassword(){
     const { email } = this.req.body;
 
@@ -91,6 +129,15 @@ class UserController extends BaseController<Request>{
     CommonService.handleResponse(this.res, "FORGET_PASSWORD_SENT", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS);
   }
 
+  /***************************************************
+   * Reset Password Controller 
+   * @body
+   * {
+   *    newPassword: string
+   *    confirmPassword: string
+   * }
+   * @returns 
+   **************************************************/
   async resetPassword(){
     const token = this.req.query.resetToken?.toString().trim();
     const { newPassword, confirmPassword } = this.req.body;

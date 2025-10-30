@@ -23,5 +23,9 @@
 	"FAILED_TO_UPDATE_CATEGORY": "FAILED_TO_UPDATE_CATEGORY",
 	"DATA_EXIST": "Already Exist",
 	"\"category_id\" is not allowed": "\"category_id\" is not allowed",
-	"CATEGORY_ALREADY_EXIST": "CATEGORY_ALREADY_EXIST"
+	"CATEGORY_ALREADY_EXIST": "CATEGORY_ALREADY_EXIST",
+	"\"password\" must be a string": "\"password\" must be a string",
+	"Expected ',' or '}' after property value in JSON at position 66 (line 4 column 5)": "Expected ',' or '}' after property value in JSON at position 66 (line 4 column 5)",
+	"\"page\" is required": "\"page\" is required",
+	"Invalid value { title": " 'Footwear' }"
 }

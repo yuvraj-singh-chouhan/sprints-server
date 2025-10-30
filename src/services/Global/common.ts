@@ -65,6 +65,7 @@ class CommonService{
       const orQuery = this.generateSearchText(searchabelField, searchText);
       query.where = {...query.where, ...orQuery};
     }
+    console.log("=========== gernerateListQuery", limit, offset)
     return [query, limit, offset];
   }
 
@@ -78,8 +79,34 @@ class CommonService{
     return {[Op.or]: orQuery};
   }
 
+<<<<<<< Updated upstream
   static constructFilterQuery(filters: []): WhereOptions{
     return [{}]
+=======
+  static constructFilterQuery<T>(filters: T[]): WhereOptions {
+    let query: WhereOptions = {};
+    for (let filter of filters) {
+      const obj = filter;
+      for (let k in filter) {
+        if (isArray(obj[k])) [
+          query["where"] = {
+            [k]: {
+              [Op.in]: obj[k]
+            }
+          }
+        ]
+        else {
+          query['where'] = {
+            ...query.where,
+            [k]: {
+              [Op.eq]: obj[k]
+            }
+          }
+        }
+      }
+    }
+    return query;
+>>>>>>> Stashed changes
   }
 
 }

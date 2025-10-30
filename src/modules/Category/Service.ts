@@ -15,7 +15,7 @@ class Service{
    */
   async handleAddCategory(data: InferAttributes<Category>): Promise<Category | Error> {
     const [slug, staticKey] = CommonService.generateKeyAndSlug(data.title);
-    const query = { where: { title: data.title, staticKey } };
+    const query = { title: data.title, staticKey };
     const isExist = await new CategoryRepository().checkAlreadyExist(Category, query);
     if(isExist){
       throw new ConflictError(i18n.__("CATEGORY_ALREADY_EXIST"));

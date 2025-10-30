@@ -1,12 +1,12 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import BaseController from "../Base/Controller";
 import { Role } from "./Model";
 import CommonService from "../../services/Global/common";
 import { HTTP_CODE } from "../../services/Global/constant";
 import { RequestType } from "../../types/requestTypes";
 
-class RoleController extends BaseController<RequestType>{
-  constructor(req: RequestType, res: Response, next: NextFunction){
+class RoleController extends BaseController<Request>{
+  constructor(req: Request, res: Response, next: NextFunction){
     super(req, res, next);
   }
 

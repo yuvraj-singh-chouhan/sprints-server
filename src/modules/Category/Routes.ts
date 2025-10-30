@@ -26,7 +26,7 @@ export default function(app: Application){
     await categoryObj.deleteCategory();
   })
 
-  router.post("/categories", Auth.isAuthorized, async (req: Request, res: Response, next: NextFunction) => {
+  router.post("/", Auth.isAuthorized, async (req: Request, res: Response, next: NextFunction) => {
     const categoryObj: CategoryController = new CategoryController(req, res, next);
     await categoryObj.getCategories();
   })
