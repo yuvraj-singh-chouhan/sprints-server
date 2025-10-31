@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import { InferAttributes, Model } from "sequelize";
+import { Attributes, InferAttributes, Model } from "sequelize";
 
 import BaseController from "../Base/Controller";
 import CommonService from "../../services/Global/common";
 import Service from "./Service";
-import { VariantTemplate } from "./Model";
 import { HTTP_CODE } from "../../services/Global/constant";
-import { RequestType } from "../../types/requestTypes";
+import { db } from "../../config/sequelize";
 
+const { Variant, VariantTemplate } = db;
 
 class Controller extends BaseController<Request>{
   constructor(req: Request, res: Response, next: NextFunction){
@@ -21,7 +21,7 @@ class Controller extends BaseController<Request>{
   async addVariantTemplate(){
     const processBody = ["title", "category_id"];
     const processedData = CommonService.processBody(processBody, this.req.body);
-    const response: Model<VariantTemplate> | Error = await new Service().handleAddVariantTemplate(processedData);
+    const response: Model<typeof VariantTemplate> | Error = await new Service().handleAddVariantTemplate(processedData);
     return CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
   }
 
@@ -32,33 +32,30 @@ class Controller extends BaseController<Request>{
   async variantTemplateListing(){
     const processBody = ['page', 'pageSize', "filter"];
     const processedData = CommonService.processBody(processBody, this.req.query);
-    const response: Attributes<VariantTemplate>[] | [] = await new Service().handleVariantTemplateListing(processedData);
+    const response: Attributes< typeof VariantTemplate>[] | [] = await new Service().handleVariantTemplateListing(processedData);
     return CommonService.handleResponse(this.res, 'SUCCESS', HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
   }
-<<<<<<< Updated upstream
-=======
 
   async updateVarintTemplate(){
     const processBody = ["title", "category_id", "_id"];
     const processedData = CommonService.processBody(processBody, this.req.body);
-    const response: Attributes<VariantTemplate> | Error = await new Service().handleUpdateVariantTemplate(processedData);
+    const response: Attributes< typeof VariantTemplate> | Error = await new Service().handleUpdateVariantTemplate(processedData);
     return CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
   }
 
   async addVariant(){
     const processBody = ["title", "variant_template_id"];
     const processedData = CommonService.processBody(processBody, this.req.body);
-    const response: Attributes<Variant> | Error = await new Service().handleAddVariant(processedData);
+    const response: Attributes< typeof Variant> | Error = await new Service().handleAddVariant(processedData);
     return CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
   }
 
   async variantListing(){
     const processBody = ["page", "pageSize", "filter"];
     const processdata = CommonService.processBody(processBody, this.req.query);
-    const response: Attributes<Variant>[] | [] = await new Service().handleVariantListing(processdata);
+    const response: Attributes<typeof Variant>[] | [] = await new Service().handleVariantListing(processdata);
     return CommonService.handleResponse(this.res, 'SUCCESS', HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
   }
->>>>>>> Stashed changes
 }
 
 export default Controller;

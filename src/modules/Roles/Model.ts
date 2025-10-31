@@ -1,6 +1,6 @@
 import { InferAttributes, InferCreationAttributes, CreationOptional, Model, ForeignKey, DataTypes, Sequelize } from "sequelize";
 import sequelizeConnection from "../../config/sequelize";
-import { User } from "../Users/Model";
+// import { User } from "../Users/Model";
 
 
 class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
@@ -9,8 +9,8 @@ class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
   declare staticKey: CreationOptional<string>;
   declare permissions: ForeignKey<Array<Permission["_id"]>>;
   declare isDefault: CreationOptional<boolean>;
-  declare createdBy: ForeignKey<User["_id"]>;
-  declare updatedBy: ForeignKey<User["_id"]>;
+  declare createdBy: string;
+  declare updatedBy: string;
   declare isDeleted: CreationOptional<boolean>;
   declare status: CreationOptional<boolean>;
   declare createdAt: CreationOptional<Date>;
@@ -29,6 +29,8 @@ class Module extends Model<InferAttributes<Module>, InferCreationAttributes<Modu
   declare name: string;
   declare staticKey: string;
 }
+
+// export type RoleModel = Model<Role>;
 
 export default (sequelize: Sequelize) => {
 

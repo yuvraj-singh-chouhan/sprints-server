@@ -1,6 +1,9 @@
 import { Attributes } from "sequelize";
-import { Product } from "./Model";
+import { db } from "../../config/sequelize";
+// import { Product } from "./Model";
 
-export interface ProductVariant extends Attributes<Product>{
+const { Product } = db;
+
+export interface ProductVariant extends Attributes<typeof Product>{
   variant_ids: string[]
 }

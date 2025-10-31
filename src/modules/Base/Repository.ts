@@ -1,9 +1,5 @@
-<<<<<<< Updated upstream
-import { QueryTypes, CreationAttributes, FindOptions, InferAttributes, InferCreationAttributes, Model, ModelStatic, WhereOptions } from "sequelize";
-=======
 import { isEmpty } from "lodash";
 import { QueryTypes, CreationAttributes, FindOptions, InferAttributes, InferCreationAttributes, Model, ModelStatic, WhereOptions, Attributes } from "sequelize";
->>>>>>> Stashed changes
 import { MakeNullishOptional } from "sequelize/types/utils";
 
 class BaseRepository{

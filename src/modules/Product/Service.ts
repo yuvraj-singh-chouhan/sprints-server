@@ -1,11 +1,12 @@
 import _ from "lodash"
 import { Attributes, Op, WhereOptions } from "sequelize";
-import { Product } from "./Model";
 import PorductRepository from "./Repository";
 import CommonService from "../../services/Global/common";
-import { Variant } from "../Variant/Model";
 import { ProductVariant } from "./types";
 import { Request } from "express";
+import { db } from "../../config/sequelize";
+
+const { Product, Variant } = db;
 
 export default class ProductService{
   Repository: PorductRepository
@@ -16,7 +17,7 @@ export default class ProductService{
     this.Repository = new PorductRepository();
   }
 
-  async addProduct(data: ProductVariant): Promise<Attributes<Product> | null>{
+  async addProduct(data: ProductVariant): Promise<Attributes<typeof Product> | null>{
     const [ staticKey, slug] =  CommonService.generateKeyAndSlug(data.name);
     let totalProducts: number = await this.Repository.findProductCount();
     let productSKU = this.createSKU(data.name, totalProducts);
@@ -42,8 +43,8 @@ export default class ProductService{
       throw new Error("ConflictError");
     }
 
-    const newProduct:any = await Product.create<Product>(productDetails);
-    const variants: Variant[] = await Variant.findAll({ where :{ _id: { [Op.in]: productDetails.variant_ids} }})
+    const newProduct:typeof Product = await Product.create(productDetails);
+    const variants: typeof Variant[] = await Variant.findAll({ where :{ _id: { [Op.in]: productDetails.variant_ids} }})
     if(variants.length){
       await newProduct.addVariants(variants);
     }

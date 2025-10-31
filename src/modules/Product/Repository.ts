@@ -1,6 +1,8 @@
 import { isEmpty } from "lodash";
 import BaseRepository from "../Base/Repository";
-import { Product } from "./Model";
+import { db } from "../../config/sequelize";
+
+const { Product } = db;
 
 export default class PorductRepository extends BaseRepository{
 

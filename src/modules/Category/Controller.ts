@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import BaseController from "../Base/Controller";
 import CommonService from "../../services/Global/common";
-import { Category } from "./Model";
 import { HTTP_CODE } from "../../services/Global/constant";
 import Service from "./Service";
+import { db } from "../../config/sequelize";
+
+const { Category } = db;
 
 export default class CategoryController extends BaseController<Request>{
   constructor(req: Request, res: Response, next: NextFunction){
@@ -18,7 +20,7 @@ export default class CategoryController extends BaseController<Request>{
     try {
       const processBody = ["title", "parentCategory_id"];
       const processedData = CommonService.processBody(processBody, this.req.body);
-      const response: Category | Error = await new Service().handleAddCategory(processedData);
+      const response: typeof Category | Error = await new Service().handleAddCategory(processedData);
       return CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
     } catch (error) {
       console.log("Error in addCategory", error);
@@ -34,7 +36,7 @@ export default class CategoryController extends BaseController<Request>{
     try {
       const processBody = ["page", "pageSize", "searchText", "filters"];
       const processedData = CommonService.processBody(processBody, this.req.body);
-      const response: Category[] | [] = await new Service().handleCategoryListing(processedData);
+      const response: typeof Category[] | [] = await new Service().handleCategoryListing(processedData);
       return CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
     } catch (error) {
       console.log("Error in categoryListing", error);
@@ -71,7 +73,7 @@ export default class CategoryController extends BaseController<Request>{
     try {
       const processBody = ["searchText"]
       const processedData = CommonService.processBody(processBody, this.req.body);
-      const response: Category[] | [] = await new Service().handleGetCategories(processedData);
+      const response: typeof Category[] | [] = await new Service().handleGetCategories(processedData);
       return CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
     } catch (error) {
       console.log("Error in getCategories", error);

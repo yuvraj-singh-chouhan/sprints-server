@@ -1,19 +1,19 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { User } from "./Model";
 import config from "../../config/config";
 import { InferAttributes } from "sequelize";
-import { AuthenticationToken } from "../Authentication/Model";
 import { JwtPayloadType } from "../../types/requestTypes";
-import { Role } from "../Roles/Model";
+import { db } from "../../config/sequelize";
+
+const { User, Role, AuthenticationToken } = db;
 
 class Service {
 
-  static async createLogin(data: InferAttributes<User>, deviceId: string): Promise<InferAttributes<AuthenticationToken> | { deviceId: string | null, token: string | null }> {
+  static async createLogin(data: InferAttributes<typeof User> , deviceId: string): Promise<InferAttributes<typeof AuthenticationToken>  | { deviceId: string | null, token: string | null }> {
     try {
       const token: string | null = await Service.genreateToken(data, Date.now() + 2 * 60 * 60 * 1000);
       const refreshToken: string | null = await Service.genreateToken(data, Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-      const param: InferAttributes<AuthenticationToken> = {
+      const param: InferAttributes<typeof AuthenticationToken>  = {
         ipAddress: "",
         token: token,
         refreshToken,
@@ -21,9 +21,9 @@ class Service {
         deviceId: deviceId
       }
 
-      let usersAuthenticationToken: AuthenticationToken | null = await AuthenticationToken.findOne({ where: { userId: data._id } });
+      let usersAuthenticationToken: typeof AuthenticationToken | null = await AuthenticationToken.findOne({ where: { userId: data._id } });
 
-      let authenticationToken: InferAttributes<AuthenticationToken>;
+      let authenticationToken: InferAttributes<typeof AuthenticationToken> ;
       if (usersAuthenticationToken) {
         let [affectedCount, affectedRows] = await AuthenticationToken.update(param, { where: { userId: data._id, deviceId: deviceId }, returning: true });
 
@@ -45,13 +45,13 @@ class Service {
    * @param data user data to register
    * @returns
    */
-  static async registerUser(data: InferAttributes<User>): Promise<InferAttributes<User> | null> {
+  static async registerUser(data: InferAttributes<typeof User> ): Promise<InferAttributes<typeof User>  | null> {
     try {
-      const defaultRole: Role | null = await Role.findOne({ where: { staticKey: "user" } });
+      const defaultRole: typeof Role | null = await Role.findOne({ where: { staticKey: "user" } });
       if (!defaultRole) {
         return null;
       }
-      const user: User | null = await User.create({
+      const user: typeof User | null = await User.create({
         ...data,
         roleId: defaultRole?._id
       });
@@ -69,7 +69,7 @@ class Service {
    * @param data user data to genreate password reset token
    * @returns
    */
-  static async generateForgotPasswordToken(data: InferAttributes<User>): Promise<boolean | string> {
+  static async generateForgotPasswordToken(data: InferAttributes<typeof User> ): Promise<boolean | string> {
     const expiresIn: number = Date.now() + 10 * 60 * 60 * 1000
     const token = jwt.sign(data, config.password_reset_secret_key!, { algorithm: "HS256", expiresIn });
 
@@ -85,7 +85,7 @@ class Service {
     try {
       const decodedToken: string | JwtPayload = jwt.verify(token, config.password_reset_secret_key!);
       if (decodedToken && typeof decodedToken !== "string") {
-        const userData: User | null = await User.findOne({ where: { _id: decodedToken._id }, raw: true });
+        const userData: typeof User | null = await User.findOne({ where: { _id: decodedToken._id }, raw: true });
 
         if (userData && userData?.passwordResetTokenExpiration < new Date(Date.now())) {
           return null
@@ -103,7 +103,7 @@ class Service {
  * @param data user data to generate token
  * @returns token
  */
-  static async genreateToken(data: InferAttributes<User>, expiresIn?: number): Promise<string> {
+  static async genreateToken(data: InferAttributes<typeof User> , expiresIn?: number): Promise<string> {
     try {
       const token = jwt.sign(data, config.jwt_secret!, { algorithm: "HS256", expiresIn: expiresIn });
       return token;

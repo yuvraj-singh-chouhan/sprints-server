@@ -1,7 +1,6 @@
 import { Application, Router, Request, Response, NextFunction } from "express";
 import Auth from "../../services/middlewares/auth";
 import VariantController from "./Controller";
-import { RequestType } from "../../types/requestTypes";
 
 export default function(app: Application){
   const router: Router = Router()

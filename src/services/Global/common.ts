@@ -1,4 +1,3 @@
-import config from "../../config/config";
 import {  Response, Request } from "express"
 import i18n from 'i18n';
 import { Op, WhereOptions, FindOptions } from "sequelize";
@@ -79,16 +78,12 @@ class CommonService{
     return {[Op.or]: orQuery};
   }
 
-<<<<<<< Updated upstream
-  static constructFilterQuery(filters: []): WhereOptions{
-    return [{}]
-=======
   static constructFilterQuery<T>(filters: T[]): WhereOptions {
     let query: WhereOptions = {};
     for (let filter of filters) {
       const obj = filter;
       for (let k in filter) {
-        if (isArray(obj[k])) [
+        if (Array.isArray(obj[k])) [
           query["where"] = {
             [k]: {
               [Op.in]: obj[k]
@@ -106,7 +101,6 @@ class CommonService{
       }
     }
     return query;
->>>>>>> Stashed changes
   }
 
 }

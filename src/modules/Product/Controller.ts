@@ -3,7 +3,9 @@ import BaseController from "../Base/Controller";
 import CommonService from "../../services/Global/common";
 import ProductService from "./Service";
 import { Attributes } from "sequelize";
-import { Product } from "./Model";
+import { db } from "../../config/sequelize";
+
+const { Product } = db;
 
 export default class ProductController extends BaseController<Request> {
   constructor(req: Request, res: Response, next: NextFunction) {
@@ -35,6 +37,6 @@ export default class ProductController extends BaseController<Request> {
       "variant_template_id",     
     ]
     const processedbody = CommonService.processBody(processableBody, this.req.body);
-    const response: Attributes<Product> | null = await new ProductService(this.req).addProduct(processedbody);
+    const response: Attributes<typeof Product> | null = await new ProductService(this.req).addProduct(processedbody);
   }
 }

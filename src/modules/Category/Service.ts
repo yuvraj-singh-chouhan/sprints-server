@@ -1,27 +1,29 @@
 import { InferAttributes, FindOptions } from "sequelize";
-import { Category } from "./Model";
 import CategoryRepository from "./Repository";
 import CommonService from "../../services/Global/common";
 import { ConflictError, FailedError, NotFoundError } from "../../Utils/Errors";
 import i18n from "i18n";
 import _ from "lodash";
 import { Op } from "sequelize";
+import { db } from "../../config/sequelize";
 
-class Service{
+const { Category } = db;
+
+class Service {
   /**
    * Handle add category
    * @param data
    * @returns
    */
-  async handleAddCategory(data: InferAttributes<Category>): Promise<Category | Error> {
+  async handleAddCategory(data: InferAttributes<typeof Category>): Promise<typeof Category | Error> {
     const [slug, staticKey] = CommonService.generateKeyAndSlug(data.title);
     const query = { title: data.title, staticKey };
     const isExist = await new CategoryRepository().checkAlreadyExist(Category, query);
-    if(isExist){
+    if (isExist) {
       throw new ConflictError(i18n.__("CATEGORY_ALREADY_EXIST"));
     }
     const category = await new CategoryRepository(data).addCategory();
-    if(category){
+    if (category) {
       return category;
     }
     throw new FailedError(i18n.__("FAILED_TO_CREATE_CATEGORY"));
@@ -32,24 +34,24 @@ class Service{
    * @param body
    * @returns
    */
-  async handleCategoryListing(body: any): Promise<Category[]>{
+  async handleCategoryListing(body: any): Promise<typeof Category[]> {
     const searchableFiled = ["title"];
-    let [query, limit, offset]: [FindOptions<Category>, number, number] = CommonService.generateListingQuery(body, searchableFiled);
-    const categories: Category[] = await new CategoryRepository().getListingData(Category, query, { limit, offset });
-    if(_.isEmpty(categories)){
+    let [query, limit, offset]: [FindOptions<typeof Category>, number, number] = CommonService.generateListingQuery(body, searchableFiled);
+    const categories: typeof Category[] = await new CategoryRepository().getListingData(Category, query, { limit, offset });
+    if (_.isEmpty(categories)) {
       return [];
     }
     return categories;
   }
 
-  async handleUpdateCategory(body: any): Promise<number | Error>{
+  async handleUpdateCategory(body: any): Promise<number | Error> {
     const query = { where: { _id: body.id } }
-    const category: Category | null = await new CategoryRepository().checkAlreadyExist(Category, query);
-    if(!category){
+    const category: typeof Category | null = await new CategoryRepository().checkAlreadyExist(Category, query);
+    if (!category) {
       throw new NotFoundError(i18n.__("CATEGORY_NOT_FOUND"));
     }
     const updatedCategory: number | null = await new CategoryRepository().updateCategory(body, query);
-    if(updatedCategory){
+    if (updatedCategory) {
       return updatedCategory;
     }
     throw new FailedError(i18n.__("FAILED_TO_UPDATE_CATEGORY"));
@@ -60,14 +62,14 @@ class Service{
    * @param id
    * @returns
    */
-  async handleDeleteCategory(id: string): Promise<number | Error>{
+  async handleDeleteCategory(id: string): Promise<number | Error> {
     const query = { where: { _id: id } }
-    const category: Category | null = await new CategoryRepository().checkAlreadyExist(Category, query);
-    if(!category){
+    const category: typeof Category | null = await new CategoryRepository().checkAlreadyExist(Category, query);
+    if (!category) {
       throw new NotFoundError(i18n.__("CATEGORY_NOT_FOUND"));
     }
     const deletedCategory: number | null = await new CategoryRepository().deleteData(Category, query);
-    if(deletedCategory){
+    if (deletedCategory) {
       return deletedCategory;
     }
     throw new FailedError(i18n.__("FAILED_TO_DELETE_CATEGORY"));
@@ -78,12 +80,12 @@ class Service{
    * @param body
    * @returns
    */
-  async handleGetCategories(body: any): Promise<Category[]>{
+  async handleGetCategories(body: any): Promise<typeof Category[]> {
     const searchableField = ["title"];
-    let query: FindOptions<Category> = {}
+    let query: FindOptions<typeof Category> = {}
     query.where = CommonService.generateSearchText(searchableField, body.searchText);
-    const categories: Category[] = await new CategoryRepository().getListingData(Category, query, {});
-    if(_.isEmpty(categories)){
+    const categories: typeof Category[] = await new CategoryRepository().getListingData(Category, query, {});
+    if (_.isEmpty(categories)) {
       return [];
     }
     return categories;

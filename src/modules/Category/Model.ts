@@ -119,7 +119,7 @@ export default (sequelize: Sequelize) => {
 // import sequelizeConnection from "../../config/sequelize";
 // import CommonService from "../../services/Global/common";
 
-// class Category extends Model<InferAttributes<Category>, InferCreationAttributes<Category>>{
+// class Category extends Model<InferAttributes<typeof Category>, InferCreationAttributes<typeof Category>>{
 //   declare _id: CreationOptional<string>;
 //   declare title: string;
 //   declare staticKey: string;

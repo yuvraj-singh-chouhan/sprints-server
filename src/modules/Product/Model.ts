@@ -1,52 +1,47 @@
 
 import { InferAttributes, InferCreationAttributes, CreationOptional, Model, DataTypes, Sequelize } from "sequelize";
-import sequelizeConnection from "../../config/sequelize";
-import { User } from "../Users/Model";
-import { Category } from "../Category/Model";
-import { Variant, VariantProduct } from "../Variant/Model";
+// import sequelizeConnection from "../../config/sequelize";
+// import { User } from "../Users/Model";
+// import { Category } from "../Category/Model";
+// import { Variant, VariantProduct } from "../Variant/Model";
 
-class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
-  declare _id: CreationOptional<string>;
-  declare totalProductCount: number;
-  declare name: string;
-  declare SKU: CreationOptional<string>;
-  declare description: string;
-  declare price: number;
-  declare salePrice: CreationOptional<boolean>;
-  declare vendor_id: string;
-  declare category_id: string;
-  declare isDeleted: CreationOptional<boolean>;
-  declare status: CreationOptional<boolean>;
-  declare createdBy: CreationOptional<string>;
-  declare meta_title: string;
-  declare meta_description: string;
-  declare meta_keywords: string;
-  declare url_slug: string;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
+export default (sequelizeConnection: Sequelize) => {
+  class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
+    declare _id: CreationOptional<string>;
+    declare totalProductCount: number;
+    declare name: string;
+    declare SKU: CreationOptional<string>;
+    declare description: string;
+    declare price: number;
+    declare salePrice: CreationOptional<boolean>;
+    declare vendor_id: string;
+    declare category_id: string;
+    declare isDeleted: CreationOptional<boolean>;
+    declare status: CreationOptional<boolean>;
+    declare createdBy: CreationOptional<string>;
+    declare meta_title: string;
+    declare meta_description: string;
+    declare meta_keywords: string;
+    declare url_slug: string;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+  }
 
-  public addVariant!: (variant: Variant, options?: any) => Promise<void>;
-  public addVariants!: (variants: Variant[], options?: any) => Promise<void>;
-  public getVariants!: () => Promise<Variant[]>;
-}
+  class ProductItem extends Model<InferAttributes<ProductItem>, InferCreationAttributes<ProductItem>> {
+    declare _id: CreationOptional<string>;
+    declare product_id: string;
+    declare variant_id: string;
+    declare sku: string;
+    declare price: number;
+    declare quantity: number;
+    declare category_id: string;
+    declare isDeleted: CreationOptional<boolean>;
+    declare status: CreationOptional<boolean>;
+    declare createdBy: CreationOptional<string>;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+  }
 
-class ProductItem extends Model<InferAttributes<ProductItem>, InferCreationAttributes<ProductItem>> {
-  declare _id: CreationOptional<string>;
-  declare product_id: string;
-  declare variant_id: string;
-  declare sku: string;
-  declare price: number;
-  declare quantity: number;
-  declare category_id: string;
-  declare isDeleted: CreationOptional<boolean>;
-  declare status: CreationOptional<boolean>;
-  declare createdBy: CreationOptional<string>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
-}
-
-
-export default (sequelize: Sequelize) => {
   Product.init({
     _id: {
       type: DataTypes.UUID,

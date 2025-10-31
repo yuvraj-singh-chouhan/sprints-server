@@ -1,11 +1,10 @@
 
 import { DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManySetAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, Association, NonAttribute, HasOneSetAssociationMixin, HasOneGetAssociationMixin, Sequelize } from "sequelize";
-import sequelizeConnection from "../../config/sequelize";
+import { db } from "../../config/sequelize";
 import bcrypt from "bcrypt";
-import { AuthenticationToken } from "../Authentication/Model";
 import { HasManyGetAssociationsMixin } from "sequelize";
-import { Role } from "../Roles/Model";
-import { Product } from "../Product/Model";
+
+const { Product, Role, AuthenticationToken } = db;
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare _id: CreationOptional<string>;
@@ -21,11 +20,11 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare status: boolean;
   declare roleId: string;
 
-  declare getAuthenticationTokens: HasManyGetAssociationsMixin<AuthenticationToken>;
-  declare getRole: HasOneGetAssociationMixin<Role>;
+  declare getAuthenticationTokens: HasManyGetAssociationsMixin<typeof AuthenticationToken>;
+  declare getRole: HasOneGetAssociationMixin<typeof Role>;
 }
 
-export default (sequelize: Sequelize) => {
+export default (sequelizeConnection: Sequelize) => {
   User.init({
     _id: {
       type: DataTypes.UUID,
@@ -91,6 +90,7 @@ export default (sequelize: Sequelize) => {
   User.belongsTo(Role, { foreignKey: 'roleId', targetKey: '_id' });
   User.hasMany(Product, { foreignKey: "vendor_id" });
   User.hasMany(Product, { foreignKey: 'createdBy' });
+  User.hasMany(AuthenticationToken);
 
   Role.hasMany(User, { foreignKey: 'roleId' });
   Role.belongsTo(User, { foreignKey: 'createdBy', targetKey: '_id' });

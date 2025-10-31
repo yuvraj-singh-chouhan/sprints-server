@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { glob } from "glob";
 import { Model, Sequelize } from "sequelize";
 import path from "path";
@@ -21,22 +22,26 @@ interface ModelDictionary {
   [key: string]: any;
 }
 
+let db: ModelDictionary = {};
+
 const databaseConnection = async (): Promise<Sequelize> => {
   try {
-    await sequelizeConnection.authenticate();
     console.log("Database connection has been established successfully.");
-
-    let db: ModelDictionary = {};
+    
     let associateMethods:any = [];
     const modules = "../modules";
     const schemaFiles = glob.sync(path.join(__dirname, modules, "**/Model.ts"));
-
+    
     schemaFiles.forEach((schema: string) => {
       const models = require(schema);
-      db = { ...db, ...models };
-      associateMethods.push(models.associate);
+      if(!_.isEmpty(models)){
+        const schemas = models.default(sequelizeConnection);
+        console.log(schemas)
+        db = { ...db, ...schemas };
+        associateMethods.push(models.associate);
+      }
     });
-
+    
     // Object.keys(db).sort((a: string, b: string) => a.localeCompare(b)).forEach((modelName: string) => {
     //   if (modelName && db[modelName] && typeof db[modelName].associate === "function") {
     //     db[modelName].associate(db);
@@ -47,6 +52,7 @@ const databaseConnection = async (): Promise<Sequelize> => {
         association(db);
       }
     })
+    await sequelizeConnection.authenticate();
     return sequelizeConnection;
   } catch (error) {
     console.error("Error connecting to database:", error);
@@ -55,5 +61,7 @@ const databaseConnection = async (): Promise<Sequelize> => {
 };
 
 
+
+
 export default sequelizeConnection;
-export { databaseConnection };
+export { databaseConnection, db };
