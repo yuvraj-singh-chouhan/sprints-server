@@ -20,9 +20,9 @@ class BaseRepository{
     }
   }
 
-  async addData<T extends Model>(Model: ModelStatic<T>, data: MakeNullishOptional<T["_creationAttributes"]>): Promise<null | Model>{
+  async addData<T extends Model>(Model: ModelStatic<T>, data: MakeNullishOptional<T["_creationAttributes"]>): Promise<null | T>{
     try {
-      const newData: Model = await Model.create(data)
+      const newData: T = await Model.create(data)
       if(newData){
         return newData;
       }

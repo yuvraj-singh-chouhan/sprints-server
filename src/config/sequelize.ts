@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { glob } from "glob";
-import { Model, Sequelize } from "sequelize";
+import { Model, ModelAttributes, ModelStatic, Sequelize } from "sequelize";
 import path from "path";
 import config from "./config";
 
@@ -18,45 +18,66 @@ const sequelizeConnection = new Sequelize(db_name, db_user, db_password, {
   sync: { force: false }
 });
 
-interface ModelDictionary {
-  [key: string]: any;
+// import { dbModels } from '../types/db';
+import { Product, ProductItem } from "../modules/Product/Model"
+import { Variant, VariantProduct, VariantTemplate } from "../modules/Variant/Model"
+import { Permission, Role } from "../modules/Roles/Model"
+import { User } from "../modules/Users/Model"
+import { AuthenticationToken } from "../modules/Authentication/Model"
+import { Category } from "../modules/Category/Model"
+
+interface dbModels {
+  Product: ModelStatic<Product>
+  Variant: ModelStatic<Variant>,
+  VariantTemplate: ModelStatic<VariantTemplate>,
+  Role: ModelStatic<Role>,
+  Permission: ModelStatic<Permission>,
+  User: ModelStatic<User>,
+  ProductItem: ModelStatic<ProductItem>,
+  AuthenticationToken: ModelStatic<AuthenticationToken>,
+  Category: ModelStatic<Category>,
+  VariantProduct: ModelStatic<VariantProduct>
 }
 
-let db: ModelDictionary = {};
 
-const databaseConnection = async (): Promise<Sequelize> => {
+let database: Partial<dbModels> = {};
+
+const databaseConnection = async (): Promise<typeof database> => {
   try {
+    await sequelizeConnection.authenticate();
     console.log("Database connection has been established successfully.");
-    
-    let associateMethods:any = [];
+
+    let associateMethods: any = [];
     const modules = "../modules";
     const schemaFiles = glob.sync(path.join(__dirname, modules, "**/Model.ts"));
-    
+
     schemaFiles.forEach((schema: string) => {
-      const models = require(schema);
-      if(!_.isEmpty(models)){
-        const schemas = models.default(sequelizeConnection);
-        console.log(schemas)
-        db = { ...db, ...schemas };
-        associateMethods.push(models.associate);
+      const modelModule = require(schema);
+      console.log(typeof modelModule?.default === "function");
+      if (typeof modelModule?.default === "function") {
+        const initialized = modelModule.default(sequelizeConnection);
+
+        console.log(initialized)
+        const associateMethod = initialized.associate;
+        delete initialized.associate;
+        Object.assign(database, initialized);
+
+        // store associate methods (if exported)
+        if (typeof associateMethod === "function") {
+          associateMethods.push(associateMethod);
+        }
       }
     });
-    
-    // Object.keys(db).sort((a: string, b: string) => a.localeCompare(b)).forEach((modelName: string) => {
-    //   if (modelName && db[modelName] && typeof db[modelName].associate === "function") {
-    //     db[modelName].associate(db);
-    //   }
-    // });
-    associateMethods.forEach((association: any) =>{
-      if((association)){
-        association(db);
+
+    associateMethods.forEach((association: any) => {
+      if ((association)) {
+        association(database);
       }
     })
-    await sequelizeConnection.authenticate();
-    return sequelizeConnection;
+    return database;
   } catch (error) {
     console.error("Error connecting to database:", error);
-    return sequelizeConnection
+    return database
   }
 };
 
@@ -64,4 +85,14 @@ const databaseConnection = async (): Promise<Sequelize> => {
 
 
 export default sequelizeConnection;
-export { databaseConnection, db };
+export { databaseConnection, database };
+
+
+export const db = new Proxy({} as dbModels, {
+  get(_, key: keyof dbModels) {
+    if (!database) {
+      throw new Error(`Database not initialized! Tried to access db.${String(key)} before initializeDatabase().`);
+    }
+    return database[key];
+  },
+});

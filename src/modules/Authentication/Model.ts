@@ -3,9 +3,9 @@ import { db } from "../../config/sequelize";
 
 const { User } = db;
 
-class AuthenticationToken extends Model<InferAttributes<AuthenticationToken>, InferCreationAttributes<AuthenticationToken>> {
+export class AuthenticationToken extends Model<InferAttributes<AuthenticationToken>, InferCreationAttributes<AuthenticationToken>> {
   declare _id?: CreationOptional<string>;
-  declare userId: ForeignKey<typeof User['_id']>;
+  declare userId: string;
   declare deviceId: string;
   declare token: string;
   declare ipAddress: CreationOptional<string>;
@@ -49,8 +49,10 @@ export default (sequelizeConnection: Sequelize) => {
     timestamps: true,
   })
 
-  AuthenticationToken.belongsTo(User);
-  return { AuthenticationToken };
+  const associate = (models: any) => {
+    models.AuthenticationToken.belongsTo(models.User);
+  }
+  return { AuthenticationToken, associate };
 }
 
 

@@ -1,8 +1,8 @@
 import { InferAttributes, InferCreationAttributes, CreationOptional, Model, DataTypes, Sequelize } from "sequelize";
-import sequelizeConnection from "../../config/sequelize";
+// import sequelizeConnection from "../../config/sequelize";
 import CommonService from "../../services/Global/common";
 
-class Category extends Model<InferAttributes<Category>, InferCreationAttributes<Category>> {
+export class Category extends Model<InferAttributes<Category>, InferCreationAttributes<Category>> {
   declare _id: CreationOptional<string>;
   declare title: string;
   declare staticKey: string;
@@ -15,7 +15,7 @@ class Category extends Model<InferAttributes<Category>, InferCreationAttributes<
   declare updatedAt: CreationOptional<Date>;
 }
 
-export default (sequelize: Sequelize) => {
+export default (sequelizeConnection: Sequelize) => {
 
   Category.init({
     _id: {
@@ -88,8 +88,9 @@ export default (sequelize: Sequelize) => {
   })
 
 
+  
   const associate = (modles: any) => {
-    Category.hasMany(modles.Category, { foreignKey: 'parentCategory_id', as: 'parentCategory' });
+    modles.Category.hasMany(modles.Category, { foreignKey: 'parentCategory_id', as: 'parentCategory' });
   }
 
   return { Category, associate };

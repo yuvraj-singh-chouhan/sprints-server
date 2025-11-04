@@ -1,46 +1,49 @@
 
-import { InferAttributes, InferCreationAttributes, CreationOptional, Model, DataTypes, Sequelize } from "sequelize";
-// import sequelizeConnection from "../../config/sequelize";
-// import { User } from "../Users/Model";
-// import { Category } from "../Category/Model";
-// import { Variant, VariantProduct } from "../Variant/Model";
+import { InferAttributes, InferCreationAttributes, CreationOptional, Model, DataTypes, Sequelize, Attributes, BelongsToManyAddAssociationsMixin, Association } from "sequelize";
+import { Variant } from "../Variant/Model";
+import { dbModels } from "../../types/db";
+
+export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
+  declare _id: CreationOptional<string>;
+  declare totalProductCount: number;
+  declare name: string;
+  declare SKU: CreationOptional<string>;
+  declare description: string;
+  declare price: number;
+  declare salePrice: CreationOptional<boolean>;
+  declare vendor_id: string;
+  declare category_id: string;
+  declare isDeleted: CreationOptional<boolean>;
+  declare status: CreationOptional<boolean>;
+  declare createdBy: CreationOptional<string>;
+  declare meta_title: string;
+  declare meta_description: string;
+  declare meta_keywords: string;
+  declare url_slug: string;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+
+  declare addVariants: BelongsToManyAddAssociationsMixin<Variant, Variant>;
+  declare static associations: {
+    variants: Association<Product, Variant>;
+  };
+}
+
+export class ProductItem extends Model<InferAttributes<ProductItem>, InferCreationAttributes<ProductItem>> {
+  declare _id: CreationOptional<string>;
+  declare product_id: string;
+  declare SKU: string;
+  declare price: number;
+  declare quantity: number;
+  declare category_id: string;
+  declare isDeleted: CreationOptional<boolean>;
+  declare status: CreationOptional<boolean>;
+  declare createdBy: CreationOptional<string>;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+}
 
 export default (sequelizeConnection: Sequelize) => {
-  class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
-    declare _id: CreationOptional<string>;
-    declare totalProductCount: number;
-    declare name: string;
-    declare SKU: CreationOptional<string>;
-    declare description: string;
-    declare price: number;
-    declare salePrice: CreationOptional<boolean>;
-    declare vendor_id: string;
-    declare category_id: string;
-    declare isDeleted: CreationOptional<boolean>;
-    declare status: CreationOptional<boolean>;
-    declare createdBy: CreationOptional<string>;
-    declare meta_title: string;
-    declare meta_description: string;
-    declare meta_keywords: string;
-    declare url_slug: string;
-    declare createdAt: CreationOptional<Date>;
-    declare updatedAt: CreationOptional<Date>;
-  }
-
-  class ProductItem extends Model<InferAttributes<ProductItem>, InferCreationAttributes<ProductItem>> {
-    declare _id: CreationOptional<string>;
-    declare product_id: string;
-    declare variant_id: string;
-    declare sku: string;
-    declare price: number;
-    declare quantity: number;
-    declare category_id: string;
-    declare isDeleted: CreationOptional<boolean>;
-    declare status: CreationOptional<boolean>;
-    declare createdBy: CreationOptional<string>;
-    declare createdAt: CreationOptional<Date>;
-    declare updatedAt: CreationOptional<Date>;
-  }
 
   Product.init({
     _id: {
@@ -127,17 +130,6 @@ export default (sequelizeConnection: Sequelize) => {
     updatedAt: 'updatedAt'
   })
 
-
-  const associate = (models: any) => {
-    Product.belongsTo(models.Category, { foreignKey: "category_id" });
-    Product.belongsToMany(models.Variant, {
-      through: models.VariantProduct,
-      foreignKey: "product_id",
-      as: "variants",
-    });
-  };
-
-
   ProductItem.init({
     _id: {
       type: DataTypes.UUID,
@@ -149,11 +141,7 @@ export default (sequelizeConnection: Sequelize) => {
       type: DataTypes.UUID,
       allowNull: false
     },
-    variant_id: {
-      type: DataTypes.UUID,
-      allowNull: false
-    },
-    sku: {
+    SKU: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -200,16 +188,16 @@ export default (sequelizeConnection: Sequelize) => {
   })
 
 
+ const associate = (models: dbModels) => {
+    models.Product.belongsTo(models.Category, { foreignKey: "category_id" });
+    models.Product.belongsToMany(models.Variant, {
+      through: models.VariantProduct,
+      foreignKey: "product_id",
+      as: "variants",
+    });
+  };
   return { Product, associate };
 }
-
-
-
-
-
-
-
-
 
 
 

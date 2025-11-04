@@ -4,6 +4,7 @@ import CommonService from "../../services/Global/common";
 import ProductService from "./Service";
 import { Attributes } from "sequelize";
 import { db } from "../../config/sequelize";
+import { HTTP_CODE } from "../../services/Global/constant";
 
 const { Product } = db;
 
@@ -17,26 +18,70 @@ export default class ProductController extends BaseController<Request> {
    * @returns 
    */
   async createProduct() {
-    const data = this.req.body;
-    const processableBody: string[] = [
-      "name",
-      "sku",
-      "description",
-      "price",
-      "salePrice",
-      "vendor_id",
-      "category_id",
-      "isDeleted",
-      "status",
-      "createdBy",
-      "meta_title",
-      "meta_description",
-      "meta_keywords",
-      "url_slug",
-      "variant_ids",
-      "variant_template_id",     
-    ]
-    const processedbody = CommonService.processBody(processableBody, this.req.body);
-    const response: Attributes<typeof Product> | null = await new ProductService(this.req).addProduct(processedbody);
+    try {
+      const data = this.req.body;
+      const processableBody: string[] = [
+        "name",
+        "sku",
+        "description",
+        "price",
+        "salePrice",
+        "vendor_id",
+        "category_id",
+        "isDeleted",
+        "status",
+        "createdBy",
+        "meta_title",
+        "meta_description",
+        "meta_keywords",
+        "url_slug",
+        "variant_ids",
+        "variant_template_id",
+      ]
+      const processedbody = CommonService.processBody(processableBody, this.req.body);
+      const response: Attributes<InstanceType<typeof Product>> | null = await new ProductService(this.req).addProduct(processedbody);
+      CommonService.handleResponse(this.res, "", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response)
+    } catch (error) {
+      this.next(error);
+    }
+  }
+
+  async productListing() {
+    try {
+      const processableBody: string[] = [
+        "page",
+        "pageSize",
+        "filters"
+      ];
+
+      const processedbody = CommonService.processBody(processableBody, this.req.body);
+      const response: Attributes<InstanceType<typeof Product>>[] | [] = await new ProductService(this.req).listing(processedbody);
+      CommonService.handleResponse(this.res, "", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response)
+    } catch (error) {
+      this.next(error);
+    }
+  }
+
+  async updateProduct() {
+    try {
+      const processBody = ["SKU", "category_id", "_id"];
+      const processedData = CommonService.processBody(processBody, this.req.body);
+      const response: Attributes<InstanceType<typeof Product>> | Error = await new ProductService(this.req).handleUpdateProduct(processedData);
+      CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
+    } catch (error) {
+      this.next(error);
+    }
+  }
+
+
+  async addProductItem(){
+    try {
+      const processBody = ["SKU", "category_id", "_id"];
+      const processedData = CommonService.processBody(processBody, this.req.body);
+      const response: Attributes<InstanceType<typeof Product>> | Error = await new ProductService(this.req).handleUpdateProduct(processedData);
+      CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
+    } catch (error) {
+      this.next(error);
+    }
   }
 }

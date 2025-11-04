@@ -64,7 +64,7 @@ class CommonService{
       const orQuery = this.generateSearchText(searchabelField, searchText);
       query.where = {...query.where, ...orQuery};
     }
-    console.log("=========== gernerateListQuery", limit, offset)
+
     return [query, limit, offset];
   }
 

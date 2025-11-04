@@ -2,9 +2,10 @@ import BaseRepository from "../Base/Repository";
 import { Attributes, FindOptions, InferAttributes, InferCreationAttributes, Model, QueryTypes, WhereOptions } from "sequelize";
 // import { Variant, VariantTemplate } from "./Model";
 import { MakeNullishOptional } from "sequelize/types/utils";
-import { db } from "../../config/sequelize";
+import { Variant, VariantTemplate } from "./Model";
+// import { db } from "../../config/sequelize";
 
-const { VariantTemplate, Variant } = db;
+// const { VariantTemplate, Variant } = db;
 
 class VariantRepository extends BaseRepository {
   query?: FindOptions;
@@ -14,11 +15,11 @@ class VariantRepository extends BaseRepository {
     this.query = query;
   }
 
-  async addVariantTemplate(data: MakeNullishOptional<InferCreationAttributes<typeof VariantTemplate, {
+  async addVariantTemplate(data: MakeNullishOptional<InferCreationAttributes<InstanceType<typeof VariantTemplate>, {
     omit: never;
-  }>>): Promise<Attributes<typeof VariantTemplate> | null> {
+  }>>): Promise<Attributes<InstanceType<typeof VariantTemplate>> | null> {
     try {
-      const variantTemplateData: Model<typeof VariantTemplate> | null = await this.addData<typeof VariantTemplate>(VariantTemplate, data);
+      const variantTemplateData: VariantTemplate | null = await this.addData<InstanceType<typeof VariantTemplate>>(VariantTemplate, data);
       return variantTemplateData;
     } catch (error) {
       console.log("Error in add Vairant data", error);
@@ -27,9 +28,9 @@ class VariantRepository extends BaseRepository {
   }
 
 
-  async updateVariantTemplate(data: Attributes<typeof VariantTemplate>, query: WhereOptions): Promise<Attributes<typeof VariantTemplate> | null> {
+  async updateVariantTemplate(data: Attributes<InstanceType<typeof VariantTemplate>>, query: WhereOptions): Promise<Attributes<InstanceType<typeof VariantTemplate>> | null> {
     try {
-      const updatedVariantTemplate: Attributes<typeof VariantTemplate> | null = await this.updateData<typeof VariantTemplate>(VariantTemplate, data, query);
+      const updatedVariantTemplate: Attributes<InstanceType<typeof VariantTemplate>> | null = await this.updateData<InstanceType<typeof VariantTemplate>>(VariantTemplate, data, query);
       return updatedVariantTemplate;
     }
     catch (error) {
@@ -38,9 +39,9 @@ class VariantRepository extends BaseRepository {
     }
   }
 
-  async handleVariantTemplateListing(query: FindOptions, paginationOptions: { limit: number, offset: number }): Promise<Attributes<typeof VariantTemplate>[] | []> {
+  async handleVariantTemplateListing(query: FindOptions, paginationOptions: { limit: number, offset: number }): Promise<Attributes<InstanceType<typeof VariantTemplate>>[] | []> {
     try {
-      const variantTemplates: Attributes<typeof VariantTemplate>[] | [] = await this.getListingData<typeof VariantTemplate>(VariantTemplate, query, null, paginationOptions)
+      const variantTemplates: Attributes<InstanceType<typeof VariantTemplate>>[] | [] = await this.getListingData<InstanceType<typeof VariantTemplate>>(VariantTemplate, query, null, paginationOptions)
       return variantTemplates;
     } catch (error) {
       console.log("Error in handleVariantTemplateListing", error);
@@ -54,9 +55,9 @@ class VariantRepository extends BaseRepository {
    * @param data 
    * @returns 
    */
-  async addVariant(data: Attributes<typeof Variant>): Promise<Attributes<typeof Variant> | null> {
+  async addVariant(data: Attributes<InstanceType<typeof Variant>>): Promise<Attributes<InstanceType<typeof Variant>> | null> {
     try {
-      const variantData: Attributes<typeof Variant> | null = await this.addData<typeof Variant>(Variant, data);
+      const variantData: Variant | null = await this.addData<Variant>(Variant, data);
       return variantData;
     } catch (error) {
       console.log("Error in add variant data", error);
@@ -69,9 +70,9 @@ class VariantRepository extends BaseRepository {
    * 
    */
 
-  async handleVariantListing(query: FindOptions, paginationOptions: { limit: number, offset: number }): Promise<Attributes<typeof Variant>[] | []> {
+  async handleVariantListing(query: FindOptions, paginationOptions: { limit: number, offset: number }): Promise<Attributes<InstanceType<typeof Variant>>[] | []> {
     try {
-      const variants: Attributes<typeof Variant>[] | [] = await this.getListingData<typeof Variant>(Variant, query, null, paginationOptions)
+      const variants: Attributes<InstanceType<typeof Variant>>[] | [] = await this.getListingData<InstanceType<typeof Variant>>(Variant, query, null, paginationOptions)
       return variants;
     } catch (error) {
       console.log("Error in handleVariantListing", error);

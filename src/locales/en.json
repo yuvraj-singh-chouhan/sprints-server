@@ -27,5 +27,7 @@
 	"\"password\" must be a string": "\"password\" must be a string",
 	"Expected ',' or '}' after property value in JSON at position 66 (line 4 column 5)": "Expected ',' or '}' after property value in JSON at position 66 (line 4 column 5)",
 	"\"page\" is required": "\"page\" is required",
-	"Invalid value { title": " 'Footwear' }"
+	"Invalid value { title": " 'Footwear' }",
+	"": "",
+	"Already Exist": "Already Exist"
 }

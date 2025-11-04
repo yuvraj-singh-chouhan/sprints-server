@@ -6,7 +6,7 @@ import { HasManyGetAssociationsMixin } from "sequelize";
 
 const { Product, Role, AuthenticationToken } = db;
 
-class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare _id: CreationOptional<string>;
   declare fullName: string;
   declare email: string;
@@ -87,16 +87,6 @@ export default (sequelizeConnection: Sequelize) => {
   });
 
 
-  User.belongsTo(Role, { foreignKey: 'roleId', targetKey: '_id' });
-  User.hasMany(Product, { foreignKey: "vendor_id" });
-  User.hasMany(Product, { foreignKey: 'createdBy' });
-  User.hasMany(AuthenticationToken);
-
-  Role.hasMany(User, { foreignKey: 'roleId' });
-  Role.belongsTo(User, { foreignKey: 'createdBy', targetKey: '_id' });
-  Role.belongsTo(User, { foreignKey: 'updatedBy', targetKey: '_id' });
-
-
   User.addHook("beforeCreate", (user: User) => {
     user.password = bcrypt.hashSync(user.password, 10);
   });
@@ -108,8 +98,21 @@ export default (sequelizeConnection: Sequelize) => {
   });
 
 
-  return User;
+  const associate = (models: any) => {
+
+    models.User.belongsTo(models.Role, { foreignKey: 'roleId', targetKey: '_id' });
+    models.User.hasMany(models.Product, { foreignKey: "vendor_id" });
+    models.User.hasMany(models.Product, { foreignKey: 'createdBy' });
+    models.User.hasMany(models.AuthenticationToken);
+
+    models.Role.hasMany(models.User, { foreignKey: 'roleId' });
+    models.Role.belongsTo(models.User, { foreignKey: 'createdBy', targetKey: '_id' });
+    models.Role.belongsTo(models.User, { foreignKey: 'updatedBy', targetKey: '_id' });
+
+  }
+  return { User, associate };
 }
+
 
 
 

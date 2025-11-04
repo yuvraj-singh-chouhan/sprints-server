@@ -21,17 +21,17 @@ class Service {
    * @returns
    */
 
-  async handleAddVariantTemplate(data: InferCreationAttributes<typeof VariantTemplate>) {
+  async handleAddVariantTemplate(data: Attributes<InstanceType<typeof VariantTemplate>>) {
     const [slug, staticKey] = CommonService.generateKeyAndSlug(data.title);
     const query: WhereOptions = {
       staticKey,
       isDeleted: false,
     }
-    const checkAlreadyExist: Model< typeof VariantTemplate>  | null = await this.Repository.checkAlreadyExist(VariantTemplate, query)
+    const checkAlreadyExist: Model<typeof VariantTemplate>  | null = await this.Repository.checkAlreadyExist(VariantTemplate, query)
     if (!_.isEmpty(checkAlreadyExist)) {
       throw new ConflictError(i18n.__("DATA_EXIST"));
     }
-    const variantTemplate: Attributes< typeof VariantTemplate>  | null = await new VariantRepository(query).addVariantTemplate(data);
+    const variantTemplate: Attributes<InstanceType<typeof VariantTemplate>>  | null = await new VariantRepository(query).addVariantTemplate(data);
     if (!_.isEmpty(variantTemplate)) {
       return variantTemplate;
     }
@@ -42,9 +42,9 @@ class Service {
    * Handle Get Variant details
    */
 
-  async handleVariantTemplateListing(data: any): Promise<Attributes< typeof VariantTemplate> [] | []> {
+  async handleVariantTemplateListing(data: any): Promise<Attributes<InstanceType<typeof VariantTemplate>> [] | []> {
     const [query, limit, offset] = CommonService.generateListingQuery(data, ["title"]);
-    const variantTemplates: Attributes< typeof VariantTemplate> [] | [] = await new VariantRepository(query).handleVariantTemplateListing(query, { limit, offset });
+    const variantTemplates: Attributes<InstanceType<typeof VariantTemplate>> [] | [] = await new VariantRepository(query).handleVariantTemplateListing(query, { limit, offset });
     return variantTemplates;
   }
 
@@ -53,17 +53,17 @@ class Service {
    * Handle Add Variant from admin side
    * @returns 
    */
-  async handleAddVariant(data: Attributes< typeof Variant> ): Promise<Attributes< typeof Variant> > {
+  async handleAddVariant(data: Attributes<InstanceType<typeof Variant>> ): Promise<Attributes<InstanceType<typeof Variant>> > {
     const [slug, staticKey] = CommonService.generateKeyAndSlug(data.title);
     const query: WhereOptions = {
       staticKey,
       isDeleted: false,
     }
-    const checkAlreadyExist: Model< typeof Variant>  | null = await this.Repository.checkAlreadyExist(Variant, query)
+    const checkAlreadyExist: Model<InstanceType<typeof Variant>>  | null = await this.Repository.checkAlreadyExist(Variant, query)
     if (!_.isEmpty(checkAlreadyExist)) {
       throw new ConflictError(i18n.__("DATA_EXIST"));
     }
-    const results: Attributes< typeof Variant>  | null = await new VariantRepository(query).addVariant(data);
+    const results: Attributes<InstanceType<typeof Variant>>  | null = await new VariantRepository(query).addVariant(data);
     if (!_.isEmpty(results)) {
       return results;
     }
@@ -74,16 +74,16 @@ class Service {
    * Handle Add Variant from admin side
    * @returns 
    */
-  async handleUpdateVariantTemplate(data: Attributes< typeof VariantTemplate> ): Promise<Attributes< typeof VariantTemplate> > {
+  async handleUpdateVariantTemplate(data: Attributes<InstanceType<typeof VariantTemplate>> ): Promise<Attributes<InstanceType<typeof VariantTemplate>>> {
     const [slug, staticKey] = CommonService.generateKeyAndSlug(data.title);
     const query: WhereOptions = {
       staticKey,
       isDeleted: false,
       id: data._id
     }
-    const checkAlreadyExist: Model< typeof VariantTemplate>  | null = await this.Repository.checkAlreadyExist(VariantTemplate, query)
+    const checkAlreadyExist: Model<typeof VariantTemplate>  | null = await this.Repository.checkAlreadyExist(VariantTemplate, query)
     if (!_.isEmpty(checkAlreadyExist)) {
-      const results: Attributes< typeof VariantTemplate>  | null = await new VariantRepository(query).updateVariantTemplate(data, query);
+      const results: Attributes<InstanceType<typeof VariantTemplate>>  | null = await new VariantRepository(query).updateVariantTemplate(data, query);
       if (!_.isEmpty(results)) {
         return results;
       }
@@ -95,9 +95,9 @@ class Service {
    * Handle variant listing from admin side
    */
 
-  async handleVariantListing(data: any): Promise<Attributes< typeof Variant> [] | []> {
+  async handleVariantListing(data: any): Promise<Attributes<InstanceType<typeof Variant>> [] | []> {
     const [query, limit, offset] = CommonService.generateListingQuery(data, ["title"]);
-    const variants: Attributes< typeof Variant> [] | [] = await new VariantRepository(query).handleVariantListing(query, { limit, offset });
+    const variants: Attributes<InstanceType<typeof Variant>> [] | [] = await new VariantRepository(query).handleVariantListing(query, { limit, offset });
     return variants;
   }
 }

@@ -1,27 +1,26 @@
 import _ from "lodash"
-import { Attributes, Op, WhereOptions } from "sequelize";
+import { Attributes, Model, Op, WhereOptions } from "sequelize";
 import PorductRepository from "./Repository";
 import CommonService from "../../services/Global/common";
-import { ProductVariant } from "./types";
+import { Pagination, ProductVariant } from "./types";
 import { Request } from "express";
 import { db } from "../../config/sequelize";
 
 const { Product, Variant } = db;
 
-export default class ProductService{
+export default class ProductService {
   Repository: PorductRepository
   req: Request
 
-  constructor(request: Request){
+  constructor(request: Request) {
     this.req = request;
     this.Repository = new PorductRepository();
   }
 
-  async addProduct(data: ProductVariant): Promise<Attributes<typeof Product> | null>{
-    const [ staticKey, slug] =  CommonService.generateKeyAndSlug(data.name);
+  async addProduct(data: ProductVariant): Promise<Attributes<InstanceType<typeof Product>> | null> {
+    const [staticKey, slug] = CommonService.generateKeyAndSlug(data.name);
     let totalProducts: number = await this.Repository.findProductCount();
     let productSKU = this.createSKU(data.name, totalProducts);
-    console.log(productSKU)
     const createdBy = this.req.currentUser._id;
     const productDetails = {
       ...data,
@@ -39,21 +38,47 @@ export default class ProductService{
     }
 
     const alredyExistProduct = this.Repository.checkAlreadyExist(Product, query)
-    if(!_.isEmpty(alredyExistProduct)){
+    if (!_.isEmpty(alredyExistProduct)) {
       throw new Error("ConflictError");
     }
 
-    const newProduct:typeof Product = await Product.create(productDetails);
-    const variants: typeof Variant[] = await Variant.findAll({ where :{ _id: { [Op.in]: productDetails.variant_ids} }})
-    if(variants.length){
+    const newProduct: InstanceType<typeof Product> = await Product.create(productDetails);
+    const variants: InstanceType<typeof Variant>[] = await Variant.findAll({ where: { _id: { [Op.in]: productDetails.variant_ids } } })
+    if (variants.length) {
       await newProduct.addVariants(variants);
     }
 
-    return null;
+    return newProduct;
   }
 
+  async listing(data: Pagination): Promise<Attributes<InstanceType<typeof Product>>[] | []> {
+    const [query, limit, offset] = CommonService.generateListingQuery(data, ["name"]);
+    const productListing: Attributes<InstanceType<typeof Product>>[] | [] = await this.Repository.handleProductListing(query, { limit, offset });
+    return productListing;
+  }
 
-  createSKU(title: string, totalProducts: number){
+    /**
+   * Handle Add Variant from admin side
+   * @returns 
+   */
+  async handleUpdateProduct(data: Attributes<InstanceType<typeof Product>> ): Promise<Attributes<InstanceType<typeof Product>>> {
+    const { SKU, _id } = data;
+    const query: WhereOptions = {
+      SKU,
+      isDeleted: false,
+      _id: data._id
+    }
+    const checkAlreadyExist: Model<typeof Product>  | null = await this.Repository.checkAlreadyExist(Product, query)
+    if (!_.isEmpty(checkAlreadyExist)) {
+      const results: Attributes<InstanceType<typeof Product>>  | null = await this.Repository.updateProduct(data, query);
+      if (!_.isEmpty(results)) {
+        return results;
+      }
+    }
+    throw new Error(i18n.__("FAILED_TO_CREATE_DATA"));
+  }
+
+  createSKU(title: string, totalProducts: number) {
     return "SKU-" + title.split(" ").map((wrd) => (wrd.slice(0, 1).toUpperCase())).join("") + "-" + totalProducts;
   }
 }

@@ -5,12 +5,11 @@ import VariantController from "./Controller";
 export default function(app: Application){
   const router: Router = Router()
 
-
   /**
    * Variant template routes
    */
   router.post("/variant-template", Auth.isAuthorized, async ( req: Request, res: Response, next: NextFunction) => {
-    const variantTemplateObj = new VariantController(req, res, next);
+    const variantTemplateObj = new VariantController(req, res, next, );
     await variantTemplateObj.addVariantTemplate();
   })
 

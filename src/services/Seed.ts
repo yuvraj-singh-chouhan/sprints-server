@@ -1,25 +1,25 @@
 import { db } from "../config/sequelize";
 
-
-const { Role } = db;
-
-class Seed{
-  async sync(){
+class Seed {
+  async sync() {
     await this.createDefaultRole();
   }
 
-  async createDefaultRole(){
+  async createDefaultRole() {
     try {
+      const { Role } = db;
       const DefaultRoles = ["Super Admin", "Vendor", "User"];
       for (const role of DefaultRoles) {
         const staticKey: string = role.toLowerCase().split(' ').join('-');
-        const defaultRole: typeof Role | null = await Role.findOne({ where: { staticKey } });
-        if(!defaultRole){
+        const defaultRole: InstanceType<typeof Role> | null = await Role.findOne({ where: { staticKey } });
+        if (!defaultRole) {
           await Role.create({
             title: role,
             staticKey,
             permissions: [],
             isDefault: true,
+            createdBy: "",
+            updatedBy: ""
           });
         }
       }

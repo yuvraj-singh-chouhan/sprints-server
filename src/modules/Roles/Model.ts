@@ -1,9 +1,9 @@
 import { InferAttributes, InferCreationAttributes, CreationOptional, Model, ForeignKey, DataTypes, Sequelize } from "sequelize";
-import sequelizeConnection from "../../config/sequelize";
+// import sequelizeConnection from "../../config/sequelize";
 // import { User } from "../Users/Model";
 
 
-class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
+export class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
   declare _id: CreationOptional<string>;
   declare title: string;
   declare staticKey: CreationOptional<string>;
@@ -17,14 +17,14 @@ class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
   declare updatedAt: CreationOptional<Date>;
 }
 
-class Permission extends Model<InferAttributes<Permission>, InferCreationAttributes<Permission>> {
+export class Permission extends Model<InferAttributes<Permission>, InferCreationAttributes<Permission>> {
   declare _id: CreationOptional<string>;
   declare title: string;
   declare staticKey: CreationOptional<string>;
   declare moduleId: ForeignKey<Module['_id']>;
 }
 
-class Module extends Model<InferAttributes<Module>, InferCreationAttributes<Module>> {
+export class Module extends Model<InferAttributes<Module>, InferCreationAttributes<Module>> {
   declare _id: CreationOptional<string>;
   declare name: string;
   declare staticKey: string;
@@ -32,7 +32,7 @@ class Module extends Model<InferAttributes<Module>, InferCreationAttributes<Modu
 
 // export type RoleModel = Model<Role>;
 
-export default (sequelize: Sequelize) => {
+export default (sequelizeConnection: Sequelize) => {
 
   Role.init({
     _id: {

@@ -1,19 +1,17 @@
 import { InferAttributes, InferCreationAttributes, CreationOptional, Model, DataTypes, Sequelize } from "sequelize";
-import sequelizeConnection from "../../config/sequelize";
+// import sequelizeConnection from "../../config/sequelize";
 import CommonService from "../../services/Global/common";
 
 /*************************************
  * VariantTemplate
  *************************************/
-class VariantTemplate extends Model<InferAttributes<VariantTemplate>, InferCreationAttributes<VariantTemplate>> {
+export class VariantTemplate extends Model<InferAttributes<VariantTemplate>, InferCreationAttributes<VariantTemplate>> {
   declare _id: CreationOptional<string>;
   declare title: string;
   declare staticKey: string;
   declare category_id: CreationOptional<Array<string | []>>;
   declare isDeleted: CreationOptional<boolean>;
   declare status: CreationOptional<boolean>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 }
 
 
@@ -21,7 +19,7 @@ class VariantTemplate extends Model<InferAttributes<VariantTemplate>, InferCreat
 /*************************************
  * Variant
  *************************************/
-class Variant extends Model<InferAttributes<Variant>, InferCreationAttributes<Variant>> {
+export class Variant extends Model<InferAttributes<Variant>, InferCreationAttributes<Variant>> {
   declare _id: CreationOptional<string>;
   declare title: string;
   declare slug: string;
@@ -29,25 +27,19 @@ class Variant extends Model<InferAttributes<Variant>, InferCreationAttributes<Va
   declare variant_template_id: string;
   declare isDeleted: CreationOptional<boolean>;
   declare status: CreationOptional<boolean>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 }
 
 /*************************************
  * VariantProduct
  *************************************/
-class VariantProduct extends Model<InferAttributes<VariantProduct>, InferCreationAttributes<VariantProduct>> {
+export class VariantProduct extends Model<InferAttributes<VariantProduct>, InferCreationAttributes<VariantProduct>> {
   declare _id: CreationOptional<string>;
   declare variant_id: string;
   declare product_id: string;
-  declare isDeleted: CreationOptional<boolean>;
-  declare status: CreationOptional<boolean>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 }
 
 
-export default (sequelize: Sequelize) => {
+export default (sequelizeConnection: Sequelize) => {
 
   VariantTemplate.init({
     _id: {
@@ -78,14 +70,6 @@ export default (sequelize: Sequelize) => {
       allowNull: false,
       defaultValue: true
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false
-    }
   }, {
     tableName: 'variant_templates',
     sequelize: sequelizeConnection,
@@ -128,14 +112,6 @@ export default (sequelize: Sequelize) => {
       allowNull: false,
       defaultValue: true
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false
-    }
   }, {
     tableName: 'variants',
     sequelize: sequelizeConnection,
@@ -172,24 +148,6 @@ export default (sequelize: Sequelize) => {
       type: DataTypes.UUID,
       allowNull: false
     },
-    isDeleted: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false
-    },
-    status: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false
-    }
   }, {
     tableName: 'variant_product',
     sequelize: sequelizeConnection,
@@ -198,29 +156,27 @@ export default (sequelize: Sequelize) => {
     updatedAt: 'updatedAt'
   });
 
-
   const associate = (models: any) => {
     /*************************************
    * VariantValue associations
    *************************************/
-    VariantTemplate.belongsTo(models.Category, { foreignKey: 'category_id', targetKey: '_id' });
-    VariantTemplate.hasMany(models.Variant, { foreignKey: 'variant_template_id', sourceKey: '_id' });
-
-
+    models.VariantTemplate.belongsTo(models.Category, { foreignKey: 'category_id', targetKey: '_id' });
+    models.VariantTemplate.hasMany(models.Variant, { foreignKey: 'variant_template_id', sourceKey: '_id' });
+  
+  
     /*************************************
    * Variant associations
    *************************************/
-    Variant.belongsTo(models.VariantTemplate, { foreignKey: 'variant_template_id', targetKey: '_id' });
-    Variant.belongsToMany(models.Product, {
+    models.Variant.belongsTo(models.VariantTemplate, { foreignKey: 'variant_template_id', targetKey: '_id' });
+    models.Variant.belongsToMany(models.Product, {
       through: models.VariantProduct,
       foreignKey: "variant_id",
       as: "products",
     });
   };
-
-
   return { Variant, VariantTemplate, VariantProduct, associate };
 }
+
 
 
 

@@ -32,7 +32,7 @@ class UserController extends BaseController<Request>{
     try {
       const processBody = ["email", "password", "deviceId"];
       const processedData = CommonService.processBody(processBody, this.req.body);
-      const user: typeof User | null = await User.findOne({ where: { email: processedData.email, isDeleted: false }, include: Role, attributes: { exclude: ["password"]} });
+      const user: InstanceType<typeof User> | null = await User.findOne({ where: { email: processedData.email, isDeleted: false }, include: Role, attributes: { exclude: ["password"]} });
       if (!user) {
         return CommonService.handleResponse(this.res, "USER_NOT_FOUND", HTTP_CODE.NOT_FOUND_CODE, HTTP_CODE.FAILED);
       }
@@ -83,12 +83,12 @@ class UserController extends BaseController<Request>{
       ]
 
       const processedData = CommonService.processBody(processBody, data);
-      const user: typeof User | null = await User.findOne({ where: { email: processedData.email, isDeleted: false } });
+      const user: InstanceType<typeof User> | null = await User.findOne({ where: { email: processedData.email, isDeleted: false } });
       if(user){
         return CommonService.handleResponse(this.res, "USER_EXIST", HTTP_CODE.CONFLICT_CODE, HTTP_CODE.FAILED);
       }
 
-      const newUser: InferAttributes<typeof User> | null = await Service.registerUser(processedData);
+      const newUser: InferAttributes<InstanceType<typeof User>> | null = await Service.registerUser(processedData);
       if(newUser){
         return CommonService.handleResponse(this.res, "CREATED_SUCCESSFULLY", HTTP_CODE.RESOURCE_CREATED_CODE, HTTP_CODE.SUCCESS);
       }
@@ -115,7 +115,7 @@ class UserController extends BaseController<Request>{
   async forgetPassword(){
     const { email } = this.req.body;
 
-    const user: typeof User | null = await User.findOne({where: {email, isDeleted: false, status: true}, raw: true});
+    const user: InstanceType<typeof User> | null = await User.findOne({where: {email, isDeleted: false, status: true}, raw: true});
 
     if(!user){
       return CommonService.handleResponse(this.res, "USER_NOT_FOUND", HTTP_CODE.CONFLICT_CODE, HTTP_CODE.FAILED)

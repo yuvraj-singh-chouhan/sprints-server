@@ -16,11 +16,11 @@ class RoleController extends BaseController<Request>{
       const { title, permissions }: {title: string, permissions: []} = this.req.body;
 
       const  staticKey: string = title.toLowerCase().split(' ').join('-');
-      const alreadyExistRole: typeof Role | null = await Role.findOne({ where: { staticKey, isDeleted: false } });
+      const alreadyExistRole: InstanceType<typeof Role> | null = await Role.findOne({ where: { staticKey, isDeleted: false } });
       if(alreadyExistRole){
         return CommonService.handleResponse(this.res, "ROLE_ALREADY_EXISTS", HTTP_CODE.CONFLICT_CODE, HTTP_CODE.FAILED);
       }
-      const role: typeof Role = await Role.create({ title, staticKey, permissions, createdBy: this.req?.currentUser?._id, updatedBy: this.req?.currentUser?._id });
+      const role: InstanceType<typeof Role> = await Role.create({ title, staticKey, permissions, createdBy: this.req?.currentUser?._id, updatedBy: this.req?.currentUser?._id });
       return CommonService.handleResponse(this.res, "ROLE_CREATED", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, {role});
     } catch (error) {
       console.log("Error in createRole", error);
@@ -37,7 +37,7 @@ class RoleController extends BaseController<Request>{
   async getRoles(){
     try {
       const query = { isDeleted: false, status: true };
-      const roles: typeof Role[] = await Role.findAll({ where: query });
+      const roles: InstanceType<typeof Role>[] = await Role.findAll({ where: query });
       return CommonService.handleResponse(this.res, "ROLES_FETCHED", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, {roles});
     } catch (error) {
       console.log("Error in getAllRoles", error);
@@ -83,7 +83,7 @@ class RoleController extends BaseController<Request>{
         query['updatedBy'] = this.req.currentUser?._id;
       }
 
-      const roles: typeof Role[] = await Role.findAll({where: query, limit, offset: skip});
+      const roles: InstanceType<typeof Role>[] = await Role.findAll({where: query, limit, offset: skip});
       return CommonService.handleResponse(this.res, "ROLES_FETCHED", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, roles);
     } catch (error) {
       console.log("Error in getRoleListing", error);
@@ -107,7 +107,7 @@ class RoleController extends BaseController<Request>{
         where: { _id: roleId, createdBy: this.req.currentUser?._id },
         isDeleted: false
       }
-      const role: typeof Role | null = await Role.findOne({ where: query });
+      const role: InstanceType<typeof Role> | null = await Role.findOne({ where: query });
       if(!role){
         return CommonService.handleResponse(this.res, "ROLE_NOT_FOUND", HTTP_CODE.NOT_FOUND_CODE, HTTP_CODE.FAILED);
       }
@@ -135,7 +135,7 @@ class RoleController extends BaseController<Request>{
         where: { _id: roleId, createdBy: this.req.currentUser?._id },
         isDeleted: false
       }
-      const role: typeof Role | null = await Role.findOne({ where: query });
+      const role: InstanceType<typeof Role> | null = await Role.findOne({ where: query });
       if(!role){
         return CommonService.handleResponse(this.res, "ROLE_NOT_FOUND", HTTP_CODE.NOT_FOUND_CODE, HTTP_CODE.FAILED);
       }
