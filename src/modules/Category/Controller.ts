@@ -7,7 +7,7 @@ import { db } from "../../config/sequelize";
 
 const { Category } = db;
 
-export default class CategoryController extends BaseController<Request>{
+export default class CategoryController extends BaseController{
   constructor(req: Request, res: Response, next: NextFunction){
     super(req, res, next);
   }

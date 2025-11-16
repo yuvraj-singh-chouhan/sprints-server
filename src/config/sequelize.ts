@@ -4,6 +4,14 @@ import { Model, ModelAttributes, ModelStatic, Sequelize } from "sequelize";
 import path from "path";
 import config from "./config";
 
+import { Product } from "../modules/Product/Model"
+import { Variant, VariantProduct, VariantTemplate } from "../modules/Variant/Model"
+import { Permission, Role } from "../modules/Roles/Model"
+import { User } from "../modules/Users/Model"
+import { AuthenticationToken } from "../modules/Authentication/Model"
+import { Category } from "../modules/Category/Model"
+import { Cart, CartItem } from '../modules/Cart/Model';
+
 const db_name: string = config.db_name!;
 const db_user: string = config.db_user!;
 const db_password: string = config.db_password!;
@@ -18,14 +26,6 @@ const sequelizeConnection = new Sequelize(db_name, db_user, db_password, {
   sync: { force: false }
 });
 
-// import { dbModels } from '../types/db';
-import { Product, ProductItem } from "../modules/Product/Model"
-import { Variant, VariantProduct, VariantTemplate } from "../modules/Variant/Model"
-import { Permission, Role } from "../modules/Roles/Model"
-import { User } from "../modules/Users/Model"
-import { AuthenticationToken } from "../modules/Authentication/Model"
-import { Category } from "../modules/Category/Model"
-
 interface dbModels {
   Product: ModelStatic<Product>
   Variant: ModelStatic<Variant>,
@@ -33,10 +33,11 @@ interface dbModels {
   Role: ModelStatic<Role>,
   Permission: ModelStatic<Permission>,
   User: ModelStatic<User>,
-  ProductItem: ModelStatic<ProductItem>,
   AuthenticationToken: ModelStatic<AuthenticationToken>,
   Category: ModelStatic<Category>,
   VariantProduct: ModelStatic<VariantProduct>
+  Cart: ModelStatic<Cart>,
+  CartItem: ModelStatic<CartItem>
 }
 
 
@@ -53,11 +54,8 @@ const databaseConnection = async (): Promise<typeof database> => {
 
     schemaFiles.forEach((schema: string) => {
       const modelModule = require(schema);
-      console.log(typeof modelModule?.default === "function");
       if (typeof modelModule?.default === "function") {
         const initialized = modelModule.default(sequelizeConnection);
-
-        console.log(initialized)
         const associateMethod = initialized.associate;
         delete initialized.associate;
         Object.assign(database, initialized);

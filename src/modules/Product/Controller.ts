@@ -8,7 +8,7 @@ import { HTTP_CODE } from "../../services/Global/constant";
 
 const { Product } = db;
 
-export default class ProductController extends BaseController<Request> {
+export default class ProductController extends BaseController {
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
   }
@@ -66,7 +66,7 @@ export default class ProductController extends BaseController<Request> {
     try {
       const processBody = ["SKU", "category_id", "_id"];
       const processedData = CommonService.processBody(processBody, this.req.body);
-      const response: Attributes<InstanceType<typeof Product>> | Error = await new ProductService(this.req).handleUpdateProduct(processedData);
+      const response: [affectedCount: number] | Error = await new ProductService(this.req).handleUpdateProduct(processedData);
       CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
     } catch (error) {
       this.next(error);
@@ -74,11 +74,12 @@ export default class ProductController extends BaseController<Request> {
   }
 
 
-  async addProductItem(){
+  async productDetails() {
     try {
-      const processBody = ["SKU", "category_id", "_id"];
-      const processedData = CommonService.processBody(processBody, this.req.body);
-      const response: Attributes<InstanceType<typeof Product>> | Error = await new ProductService(this.req).handleUpdateProduct(processedData);
+      const { id } = this.req.params;
+      console.log("id", id)
+      const response: Attributes<InstanceType<typeof Product>> | null = await new ProductService(this.req).handleProductDetails(id);
+      console.log(response);
       CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
     } catch (error) {
       this.next(error);

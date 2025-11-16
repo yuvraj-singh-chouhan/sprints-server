@@ -8,7 +8,7 @@ import { db } from "../../config/sequelize";
 
 const { Role, User } = db;
 
-class UserController extends BaseController<Request>{
+class UserController extends BaseController{
   constructor(req: Request, res: Response, next: NextFunction){
     super(req, res, next);
   }

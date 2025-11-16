@@ -6,7 +6,7 @@ import { db } from "../../config/sequelize";
 
 const { Role } = db;
 
-class RoleController extends BaseController<Request>{
+class RoleController extends BaseController{
   constructor(req: Request, res: Response, next: NextFunction){
     super(req, res, next);
   }

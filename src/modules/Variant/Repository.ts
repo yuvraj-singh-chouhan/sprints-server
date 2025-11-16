@@ -28,9 +28,9 @@ class VariantRepository extends BaseRepository {
   }
 
 
-  async updateVariantTemplate(data: Attributes<InstanceType<typeof VariantTemplate>>, query: WhereOptions): Promise<Attributes<InstanceType<typeof VariantTemplate>> | null> {
+  async updateVariantTemplate(data: Attributes<InstanceType<typeof VariantTemplate>>, query: WhereOptions): Promise<[affectedCount: number]> {
     try {
-      const updatedVariantTemplate: Attributes<InstanceType<typeof VariantTemplate>> | null = await this.updateData<InstanceType<typeof VariantTemplate>>(VariantTemplate, data, query);
+      const updatedVariantTemplate: [affectedCount: number] = await this.updateData<InstanceType<typeof VariantTemplate>>(VariantTemplate, data, query);
       return updatedVariantTemplate;
     }
     catch (error) {

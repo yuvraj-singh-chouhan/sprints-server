@@ -33,12 +33,13 @@ class BaseRepository{
     }
   }
 
-  async updateData<T extends Model>(Model: ModelStatic<T>, data: MakeNullishOptional<T["_creationAttributes"]>, query: WhereOptions): Promise<null | Attributes<T>>{
+  async updateData<T extends Model>(Model: ModelStatic<T>, data: MakeNullishOptional<T["_creationAttributes"]>, query: WhereOptions): Promise<[affectedCount: number]>{
     try {
-      const updatedData: Attributes<T> = await Model.update(data, { where: query})
+      const updatedData: [affectedCount: number] = await Model.update(data, { where: query})
       return updatedData
     } catch (error) {
       console.log("Error in updateData", error);
+      throw error
     }
   }
 
@@ -54,6 +55,19 @@ class BaseRepository{
       return data;
     } catch (error) {
       console.log("Error in getListingData", error);
+      throw error;
+    }
+  }
+
+
+  async getDetails<T extends Model>(Model: ModelStatic<T>, query: FindOptions<T>, projection?: any){
+    try{
+      console.log("query", query);
+      const data = await Model.findOne(query);
+      console.log(data);  
+      return data;
+    }catch(error){
+      console.log("Error in getDetais", error);
       throw error;
     }
   }

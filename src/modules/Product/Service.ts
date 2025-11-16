@@ -1,12 +1,12 @@
 import _ from "lodash"
-import { Attributes, Model, Op, WhereOptions } from "sequelize";
+import { Attributes, FindOptions, Model, Op, WhereOptions } from "sequelize";
 import PorductRepository from "./Repository";
 import CommonService from "../../services/Global/common";
 import { Pagination, ProductVariant } from "./types";
 import { Request } from "express";
 import { db } from "../../config/sequelize";
 
-const { Product, Variant } = db;
+const { Product, Variant, User } = db;
 
 export default class ProductService {
   Repository: PorductRepository
@@ -57,27 +57,40 @@ export default class ProductService {
     return productListing;
   }
 
-    /**
-   * Handle Add Variant from admin side
-   * @returns 
-   */
-  async handleUpdateProduct(data: Attributes<InstanceType<typeof Product>> ): Promise<Attributes<InstanceType<typeof Product>>> {
+  /**
+ * Handle Add Variant from admin side
+ * @returns 
+ */
+  async handleUpdateProduct(data: Attributes<InstanceType<typeof Product>>): Promise<[affectedCount: number]> {
     const { SKU, _id } = data;
     const query: WhereOptions = {
       SKU,
       isDeleted: false,
       _id: data._id
     }
-    const checkAlreadyExist: Model<typeof Product>  | null = await this.Repository.checkAlreadyExist(Product, query)
+    const checkAlreadyExist: Model<typeof Product> | null = await this.Repository.checkAlreadyExist(Product, query)
     if (!_.isEmpty(checkAlreadyExist)) {
-      const results: Attributes<InstanceType<typeof Product>>  | null = await this.Repository.updateProduct(data, query);
+      const results: [affectedCount: number] = await this.Repository.updateProduct(data, query);
       if (!_.isEmpty(results)) {
         return results;
       }
     }
-    throw new Error(i18n.__("FAILED_TO_CREATE_DATA"));
+    throw new Error(i18n.__("FAILED_TO_UPDATE_DATA"));
   }
 
+  async handleProductDetails(id: string): Promise<Attributes<InstanceType<typeof Product>> | null> {
+    const query: FindOptions = {
+      where: { _id: id },
+      include: [
+        { model: Variant, as: 'variants' },
+        { model: User, as: "vendor" }
+      ]
+    }
+
+    const productDetails: Attributes<InstanceType<typeof Product>> | null = await this.Repository.productDetails(query)
+
+    return productDetails;
+  }
   createSKU(title: string, totalProducts: number) {
     return "SKU-" + title.split(" ").map((wrd) => (wrd.slice(0, 1).toUpperCase())).join("") + "-" + totalProducts;
   }

@@ -17,13 +17,24 @@ export default class PorductRepository extends BaseRepository {
     }
   }
 
-  async updateProduct(data: Attributes<InstanceType<typeof Product>>, query: WhereOptions): Promise<Attributes<InstanceType<typeof Product>> | null> {
+  async updateProduct(data: Attributes<InstanceType<typeof Product>>, query: WhereOptions): Promise<[affectedCount: number]> {
     try {
-      const updatedProduct: Attributes<InstanceType<typeof Product>> | null = await this.updateData<InstanceType<typeof Product>>(Product, data, query);
+      const updatedProduct: [affectedCount: number] = await this.updateData<InstanceType<typeof Product>>(Product, data, query);
       return updatedProduct;
     }
     catch (error) {
       console.log("Error in updatedProduct", error);
+      throw error;
+    }
+  }
+
+  async productDetails(query: FindOptions): Promise<Attributes<InstanceType<typeof Product>> | null> {
+    try {
+      console.log("productDetails query", query);
+      const product: Attributes<InstanceType<typeof Product>> | null = await this.getDetails(Product, query);
+      return product;
+    } catch (error) {
+      console.log("Error in ProductDetails", error);
       throw error;
     }
   }

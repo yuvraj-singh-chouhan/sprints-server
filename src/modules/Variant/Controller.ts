@@ -9,7 +9,7 @@ import { db } from "../../config/sequelize";
 
 const { Variant, VariantTemplate } = db;
 
-class Controller extends BaseController<Request> {
+class Controller extends BaseController {
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
   }
@@ -48,7 +48,7 @@ class Controller extends BaseController<Request> {
     try {
       const processBody = ["title", "category_id", "_id"];
       const processedData = CommonService.processBody(processBody, this.req.body);
-      const response: Attributes<InstanceType<typeof VariantTemplate>> | Error = await new Service().handleUpdateVariantTemplate(processedData);
+      const response: [affectedCount: number] = await new Service().handleUpdateVariantTemplate(processedData);
       CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
     } catch (error) {
       this.next(error);
