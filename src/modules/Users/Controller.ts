@@ -1,22 +1,38 @@
 import { Request, Response, NextFunction } from "express";
 import BaseController from "../Base/Controller";
-import { User } from "./Model";
 import CommonService from "../../services/Global/common";
 import { HTTP_CODE } from "../../services/Global/constant";
 import Service from "./Service";
 import { InferAttributes } from "sequelize";
-import { Role } from "../Roles/Model";
+import { db } from "../../config/sequelize";
 
-class UserController extends BaseController<Request>{
+const { Role, User } = db;
+
+class UserController extends BaseController{
   constructor(req: Request, res: Response, next: NextFunction){
     super(req, res, next);
   }
+
+
+  /***************************************************
+   * Reset Password Controller 
+   * @body {
+   *    fullName: string
+   *    email: string
+   *    deviceId: string
+   *    password: string
+   *    gender: string
+   *    age: string
+   *    mobile: string
+   * }
+   * @returns 
+   **************************************************/
 
   async login() {
     try {
       const processBody = ["email", "password", "deviceId"];
       const processedData = CommonService.processBody(processBody, this.req.body);
-      const user: User | null = await User.findOne({ where: { email: processedData.email, isDeleted: false }, include: Role, attributes: { exclude: ["password"]} });
+      const user: InstanceType<typeof User> | null = await User.findOne({ where: { email: processedData.email, isDeleted: false }, include: Role, attributes: { exclude: ["password"]} });
       if (!user) {
         return CommonService.handleResponse(this.res, "USER_NOT_FOUND", HTTP_CODE.NOT_FOUND_CODE, HTTP_CODE.FAILED);
       }
@@ -39,6 +55,20 @@ class UserController extends BaseController<Request>{
     }
   }
 
+
+  /***************************************************
+   * Reset Password Controller 
+   * @body {
+   *    fullName: string
+   *    email: string
+   *    password: string
+   *    gender: string
+   *    age: string
+   *    mobile: string
+   * }
+   * @returns 
+   **************************************************/
+
   async register() {
     try{
       const data = this.req.body;
@@ -53,12 +83,12 @@ class UserController extends BaseController<Request>{
       ]
 
       const processedData = CommonService.processBody(processBody, data);
-      const user: User | null = await User.findOne({ where: { email: processedData.email, isDeleted: false } });
+      const user: InstanceType<typeof User> | null = await User.findOne({ where: { email: processedData.email, isDeleted: false } });
       if(user){
         return CommonService.handleResponse(this.res, "USER_EXIST", HTTP_CODE.CONFLICT_CODE, HTTP_CODE.FAILED);
       }
 
-      const newUser: InferAttributes<User> | null = await Service.registerUser(processedData);
+      const newUser: InferAttributes<InstanceType<typeof User>> | null = await Service.registerUser(processedData);
       if(newUser){
         return CommonService.handleResponse(this.res, "CREATED_SUCCESSFULLY", HTTP_CODE.RESOURCE_CREATED_CODE, HTTP_CODE.SUCCESS);
       }
@@ -73,10 +103,19 @@ class UserController extends BaseController<Request>{
     CommonService.handleResponse(this.res, "USER_NOT_FOUND", HTTP_CODE.NOT_FOUND_CODE, HTTP_CODE.FAILED)
   }
 
+
+  /**************************************************
+   * Reset Password Controller
+   * @body {
+   *    email: string
+   * }
+   * @returns
+   **************************************************/
+
   async forgetPassword(){
     const { email } = this.req.body;
 
-    const user: User | null = await User.findOne({where: {email, isDeleted: false, status: true}, raw: true});
+    const user: InstanceType<typeof User> | null = await User.findOne({where: {email, isDeleted: false, status: true}, raw: true});
 
     if(!user){
       return CommonService.handleResponse(this.res, "USER_NOT_FOUND", HTTP_CODE.CONFLICT_CODE, HTTP_CODE.FAILED)
@@ -91,6 +130,15 @@ class UserController extends BaseController<Request>{
     CommonService.handleResponse(this.res, "FORGET_PASSWORD_SENT", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS);
   }
 
+  /***************************************************
+   * Reset Password Controller 
+   * @body
+   * {
+   *    newPassword: string
+   *    confirmPassword: string
+   * }
+   * @returns 
+   **************************************************/
   async resetPassword(){
     const token = this.req.query.resetToken?.toString().trim();
     const { newPassword, confirmPassword } = this.req.body;

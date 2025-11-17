@@ -9,7 +9,6 @@ import swaggerUI from 'swagger-ui-express';
 import fs, { globSync } from 'fs';
 import config from './config';
 import i18n from 'i18n';
-import Seed from '../services/Seed';
 import ErrorMiddleWare from '../services/middlewares/ErrorMiddleWare';
 
 export default () =>{
@@ -70,10 +69,6 @@ export default () =>{
 
 
   app.use((error: Error, req: Request, res: Response, next: NextFunction) => ErrorMiddleWare(error, req, res, next));
-  if(config.NODE_ENV !== "test"){
-    const seed = new Seed();
-    seed.sync();
-  }
 
   return app;
 }

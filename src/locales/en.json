@@ -23,5 +23,17 @@
 	"FAILED_TO_UPDATE_CATEGORY": "FAILED_TO_UPDATE_CATEGORY",
 	"DATA_EXIST": "Already Exist",
 	"\"category_id\" is not allowed": "\"category_id\" is not allowed",
-	"CATEGORY_ALREADY_EXIST": "CATEGORY_ALREADY_EXIST"
+	"CATEGORY_ALREADY_EXIST": "CATEGORY_ALREADY_EXIST",
+	"\"password\" must be a string": "\"password\" must be a string",
+	"Expected ',' or '}' after property value in JSON at position 66 (line 4 column 5)": "Expected ',' or '}' after property value in JSON at position 66 (line 4 column 5)",
+	"\"page\" is required": "\"page\" is required",
+	"Invalid value { title": " 'Footwear' }",
+	"": "",
+	"Already Exist": "Already Exist",
+	"column \"nan\" does not exist": "column \"nan\" does not exist",
+	"Variant is associated to Product using an alias. You must use the 'as' keyword to specify the alias within your include statement.": "Variant is associated to Product using an alias. You must use the 'as' keyword to specify the alias within your include statement.",
+	"VariantProduct is not associated to Product!": "VariantProduct is not associated to Product!",
+	"User is not associated to Product!": "User is not associated to Product!",
+	"Invalid value { productId": " '9b120979-d9ff-4e08-8416-2969a66cb314' }",
+	"column \"ProductId\" does not exist": "column \"ProductId\" does not exist"
 }

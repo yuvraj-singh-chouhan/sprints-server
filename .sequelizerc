@@ -1,0 +1,8 @@
+import path from "path"
+
+export default {
+  // config: path.resolve("config", "./src/config/config.json"),
+  'config': path.resolve('src', 'config', 'config.ts'),
+  'migrations-path': path.resolve('src', 'migrations'),
+  // "migration-path": path.resolve('src', "./src/config/migrtions")
+}

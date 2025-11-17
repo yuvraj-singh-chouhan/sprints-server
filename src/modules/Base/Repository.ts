@@ -1,4 +1,5 @@
-import { QueryTypes, CreationAttributes, FindOptions, InferAttributes, InferCreationAttributes, Model, ModelStatic, WhereOptions } from "sequelize";
+import { isEmpty } from "lodash";
+import { QueryTypes, CreationAttributes, FindOptions, InferAttributes, InferCreationAttributes, Model, ModelStatic, WhereOptions, Attributes } from "sequelize";
 import { MakeNullishOptional } from "sequelize/types/utils";
 
 class BaseRepository{
@@ -6,9 +7,9 @@ class BaseRepository{
    * Chexk already exist  category
    * @returns
    */
-  async checkAlreadyExist<T extends Model>(Model: ModelStatic<T>, query?: FindOptions<T>): Promise<T | null > {
+  async checkAlreadyExist<T extends Model>(Model: ModelStatic<T>, query: WhereOptions<T>): Promise<T | null > {
     try {
-      const existedItem = await Model.findOne(query);
+      const existedItem = await Model.findOne({  where: query });
       if(existedItem){
         return existedItem;
       }
@@ -19,9 +20,9 @@ class BaseRepository{
     }
   }
 
-  async addData<T extends Model>(Model: ModelStatic<T>, data: MakeNullishOptional<T["_creationAttributes"]>): Promise<null | Model>{
+  async addData<T extends Model>(Model: ModelStatic<T>, data: MakeNullishOptional<T["_creationAttributes"]>): Promise<null | T>{
     try {
-      const newData: Model = await Model.create(data)
+      const newData: T = await Model.create(data)
       if(newData){
         return newData;
       }
@@ -32,15 +33,41 @@ class BaseRepository{
     }
   }
 
+  async updateData<T extends Model>(Model: ModelStatic<T>, data: Attributes<T["_creationAttributes"]>, query: WhereOptions): Promise<[affectedCount: number]>{
+    try {
+      const updatedData: [affectedCount: number] = await Model.update(data, { where: query})
+      return updatedData
+    } catch (error) {
+      console.log("Error in updateData", error);
+      throw error
+    }
+  }
+
+
   async getListingData<T extends Model>(Model: ModelStatic<T>, query: FindOptions<T> , projection?: any, paginationOptions?: { limit?: number, offset?: number }): Promise<T[]> {
     try {
-      const data = await Model.findAll({
-        ...query,
-        ...paginationOptions
-      });
+      const queryObj = {
+        ...(isEmpty(query.where) ? {} : query),
+        ...(isEmpty(paginationOptions) ? {} : paginationOptions)
+      }
+      console.log({queryObj})
+      const data = await Model.findAll(queryObj);
       return data;
     } catch (error) {
       console.log("Error in getListingData", error);
+      throw error;
+    }
+  }
+
+
+  async getDetails<T extends Model>(Model: ModelStatic<T>, query: FindOptions<T>, projection?: any){
+    try{
+      console.log("query", query);
+      const data = await Model.findOne(query);
+      console.log(data);  
+      return data;
+    }catch(error){
+      console.log("Error in getDetais", error);
       throw error;
     }
   }

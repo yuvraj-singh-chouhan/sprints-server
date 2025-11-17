@@ -1,4 +1,3 @@
-import config from "../../config/config";
 import {  Response, Request } from "express"
 import i18n from 'i18n';
 import { Op, WhereOptions, FindOptions } from "sequelize";
@@ -65,6 +64,7 @@ class CommonService{
       const orQuery = this.generateSearchText(searchabelField, searchText);
       query.where = {...query.where, ...orQuery};
     }
+
     return [query, limit, offset];
   }
 
@@ -78,8 +78,29 @@ class CommonService{
     return {[Op.or]: orQuery};
   }
 
-  static constructFilterQuery(filters: []): WhereOptions{
-    return [{}]
+  static constructFilterQuery<T>(filters: T[]): WhereOptions {
+    let query: WhereOptions = {};
+    for (let filter of filters) {
+      const obj = filter;
+      for (let k in filter) {
+        if (Array.isArray(obj[k])) [
+          query["where"] = {
+            [k]: {
+              [Op.in]: obj[k]
+            }
+          }
+        ]
+        else {
+          query['where'] = {
+            ...query.where,
+            [k]: {
+              [Op.eq]: obj[k]
+            }
+          }
+        }
+      }
+    }
+    return query;
   }
 
 }

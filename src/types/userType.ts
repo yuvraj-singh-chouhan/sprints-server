@@ -1,8 +1,9 @@
 import { InferAttributes } from "sequelize";
-import { User } from "../modules/Users/Model";
-import { Role } from "../modules/Roles/Model";
+import { db } from "../config/sequelize";
 
-export interface UserType extends InferAttributes<User, {omit: "password"} & {passwordResetToken: string | null, passwordResetTokenExpiration: Date | null, address: {line1: string, line2: string, city: string, state: string, country: string, zipCode: string}, gender: 'male' | 'female' | 'other'}>{
+const { User, Role} = db;
+
+export interface UserType extends InferAttributes<InstanceType<typeof User> /* {omit: "password"} & {passwordResetToken: string | null, passwordResetTokenExpiration: Date | null, address: {line1: string, line2: string, city: string, state: string, country: string, zipCode: string}, gender: 'male' | 'female' | 'other'} */>{
   _id: string;
-  role: InferAttributes<Role>;
+  role: InferAttributes<InstanceType<typeof Role>>;
 }
