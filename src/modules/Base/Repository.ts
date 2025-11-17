@@ -33,7 +33,7 @@ class BaseRepository{
     }
   }
 
-  async updateData<T extends Model>(Model: ModelStatic<T>, data: MakeNullishOptional<T["_creationAttributes"]>, query: WhereOptions): Promise<[affectedCount: number]>{
+  async updateData<T extends Model>(Model: ModelStatic<T>, data: Attributes<T["_creationAttributes"]>, query: WhereOptions): Promise<[affectedCount: number]>{
     try {
       const updatedData: [affectedCount: number] = await Model.update(data, { where: query})
       return updatedData

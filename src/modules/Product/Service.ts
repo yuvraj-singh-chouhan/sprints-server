@@ -5,6 +5,7 @@ import CommonService from "../../services/Global/common";
 import { Pagination, ProductVariant } from "./types";
 import { Request } from "express";
 import { db } from "../../config/sequelize";
+import { ConflictError } from "../../Utils/Errors";
 
 const { Product, Variant, User } = db;
 
@@ -39,7 +40,7 @@ export default class ProductService {
 
     const alredyExistProduct = this.Repository.checkAlreadyExist(Product, query)
     if (!_.isEmpty(alredyExistProduct)) {
-      throw new Error("ConflictError");
+      throw new ConflictError(i18n.__("DATA_EXIST"));
     }
 
     const newProduct: InstanceType<typeof Product> = await Product.create(productDetails);
