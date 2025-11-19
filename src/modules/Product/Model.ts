@@ -31,19 +31,19 @@ export class Product extends Model<InferAttributes<Product>, InferCreationAttrib
   };
 }
 
-// export class ProductItem extends Model<InferAttributes<ProductItem>, InferCreationAttributes<ProductItem>> {
-//   declare _id: CreationOptional<string>;
-//   declare product_id: string;
-//   declare SKU: string;
-//   declare price: number;
-//   declare quantity: number;
-//   declare category_id: string;
-//   declare isDeleted: CreationOptional<boolean>;
-//   declare status: CreationOptional<boolean>;
-//   declare createdBy: CreationOptional<string>;
-//   declare createdAt: CreationOptional<Date>;
-//   declare updatedAt: CreationOptional<Date>;
-// }
+export class ProductItem extends Model<InferAttributes<ProductItem>, InferCreationAttributes<ProductItem>> {
+  declare _id: CreationOptional<string>;
+  declare product_id: string;
+  declare SKU: string;
+  declare price: number;
+  declare quantity: number;
+  declare category_id: string;
+  declare isDeleted: CreationOptional<boolean>;
+  declare status: CreationOptional<boolean>;
+  declare createdBy: CreationOptional<string>;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+}
 
 export default (sequelizeConnection: Sequelize) => {
 
@@ -132,62 +132,62 @@ export default (sequelizeConnection: Sequelize) => {
     updatedAt: 'updatedAt'
   })
 
-  // ProductItem.init({
-  //   _id: {
-  //     type: DataTypes.UUID,
-  //     allowNull: false,
-  //     primaryKey: true,
-  //     defaultValue: DataTypes.UUIDV4
-  //   },
-  //   product_id: {
-  //     type: DataTypes.UUID,
-  //     allowNull: false
-  //   },
-  //   SKU: {
-  //     type: DataTypes.STRING,
-  //     allowNull: false
-  //   },
-  //   price: {
-  //     type: DataTypes.DECIMAL,
-  //     allowNull: false
-  //   },
-  //   quantity: {
-  //     type: DataTypes.INTEGER,
-  //     allowNull: false
-  //   },
-  //   isDeleted: {
-  //     type: DataTypes.BOOLEAN,
-  //     allowNull: false,
-  //     defaultValue: false
-  //   },
-  //   category_id: {
-  //     type: DataTypes.UUID,
-  //     allowNull: false
-  //   },
-  //   status: {
-  //     type: DataTypes.BOOLEAN,
-  //     allowNull: false,
-  //     defaultValue: true
-  //   },
-  //   createdBy: {
-  //     type: DataTypes.UUID,
-  //     allowNull: false
-  //   },
-  //   createdAt: {
-  //     type: DataTypes.DATE,
-  //     allowNull: false
-  //   },
-  //   updatedAt: {
-  //     type: DataTypes.DATE,
-  //     allowNull: false
-  //   }
-  // }, {
-  //   tableName: 'product_items',
-  //   sequelize: sequelizeConnection,
-  //   timestamps: true,
-  //   createdAt: 'createdAt',
-  //   updatedAt: 'updatedAt'
-  // })
+  ProductItem.init({
+    _id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4
+    },
+    product_id: {
+      type: DataTypes.UUID,
+      allowNull: false
+    },
+    SKU: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    price: {
+      type: DataTypes.DECIMAL,
+      allowNull: false
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    category_id: {
+      type: DataTypes.UUID,
+      allowNull: false
+    },
+    status: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
+    },
+    createdBy: {
+      type: DataTypes.UUID,
+      allowNull: false
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    }
+  }, {
+    tableName: 'product_items',
+    sequelize: sequelizeConnection,
+    timestamps: true,
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  })
 
 
   const associate = (models: dbModels) => {

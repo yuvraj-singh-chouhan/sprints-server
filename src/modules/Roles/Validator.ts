@@ -58,7 +58,7 @@ class Validator{
   static async validateUpdateRole(req: Request, res: Response, next: NextFunction): Promise<void> {
     const schema =  Joi.object({
       title: Joi.string().required(),
-      permissions: Joi.array().required().items(Joi.string().required()),
+      permissions: Joi.array().required(),
     })
     const { error, value } = schema.validate(req.body);
     if (error) {

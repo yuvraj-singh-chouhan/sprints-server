@@ -1,10 +1,13 @@
 import { Request } from "express";
 import { db } from "../../config/sequelize";
 import { ConflictError, NotFoundError } from "../../Utils/Errors";
-import { Attributes, FindOptions, WhereOptions } from "sequelize";
+import { Attributes, FindOptions, Op, WhereOptions } from "sequelize";
 import { RoleRepository } from "./Repository";
 import CommonService from "../../services/Global/common";
 import { Pagination } from "../Product/types";
+import i18n from "i18n";
+import _ from "lodash"
+import { string } from "joi";
 
 const { Role } = db;
 class RolesService {
@@ -23,8 +26,8 @@ class RolesService {
    *   permissions: [],
    * }
    */
-  async handleCreateRole(): Promise<Attributes<InstanceType<typeof Role>> | null> {
-    const { title, permissions }: { title: string, permissions: [] } = this.req.body;
+  async handleCreateRole(data: Attributes<InstanceType<typeof Role>>): Promise<Attributes<InstanceType<typeof Role>> | null> {
+    const { title, permissions }: Attributes<InstanceType<typeof Role>> = data;
 
     const [slug, staticKey] = CommonService.generateKeyAndSlug(title);
     const query = { staticKey, isDeleted: false };
@@ -50,15 +53,28 @@ class RolesService {
    *    affectedCount: 0 | 1
    * }
    */
-  async handleUpdateRole(): Promise<[affectedCount: number]> {
+  async handleUpdateRole(roleData: Attributes<InstanceType<typeof Role>>): Promise<[affectedCount: number]> {
     const roleId = this.req.params.roleId;
-    const data: { title: string, permissions: [], status: boolean, isDeleted: boolean } = this.req.body;
-    const query: WhereOptions = { _id: roleId, createdBy: this.req.currentUser?._id, isDeleted: false };
+    let data: Attributes<InstanceType<typeof Role>> = roleData;
+    const [slug, staticKey] = CommonService.generateKeyAndSlug(roleData.title);
+    const isRoleExist: InstanceType<typeof Role> | null = await this.Repository.checkAlreadyExist(Role, { _id: roleId });
+    if (_.isEmpty(isRoleExist)) {
+      throw new NotFoundError(i18n.__("NOT_FOUND"));
+    }
+    const query: WhereOptions = { _id: { [Op.ne]: roleId }, staticKey: staticKey, isDeleted: false };
     const role: InstanceType<typeof Role> | null = await this.Repository.checkAlreadyExist(Role, query);
-    if (!role) {
+    console.log("role", role);
+    if (!_.isEmpty(role)) {
       throw new ConflictError(i18n.__("DATA_EXIST"));
     }
-    const response: [affectedCount: number] = await this.Repository.updateData(Role, data, query);
+    const updateRoleData = {
+      ...data,
+      staticKey,
+      updateBy: this.req.currentUser._id,
+      permissions: []
+    }
+
+    const response: [affectedCount: number] = await this.Repository.updateData(Role, updateRoleData, { _id: roleId });
     return response;
   }
 
@@ -71,15 +87,15 @@ class RolesService {
    *    affectedCount: 0 | 1
    * }
    */
-  async handleDeleteRole(data: { roleId: string }): Promise<[affectedCount: number]> {
-    const roleId = data.roleId;
+  async handleDeleteRole(): Promise<[affectedCount: number]> {
+    const roleId = this.req.params.roleId;
     const query: WhereOptions = {
       _id: roleId,
       createdBy: this.req.currentUser?._id,
       isDeleted: false
     }
     const role: InstanceType<typeof Role> | null = await this.Repository.checkAlreadyExist(Role, query);
-    if (!role) {
+    if (_.isEmpty(role)) {
       throw new NotFoundError(i18n.__("NOT_FOUND"));
     }
     const deletedRole: [affectedCount: number] = await this.Repository.updateData(Role, { isDeleted: true }, query);
@@ -87,37 +103,15 @@ class RolesService {
   }
 
 
-  async handleRoleListing(data: Pagination) {
-    // const data: { page: number, pageSize: number, searchText?: string, filters?: [] } = this.req.body;
-    // const page = data.page;
-    // const limit = data.pageSize;
-    // const skip = (page - 1) * limit;
-    // const query: any = { isDeleted: false };
-    // const searchText: string | undefined = data.searchText;
-    // const andQuery = [];
-    // const filters = data.filters;
-
-    // if (searchText) {
-    //   andQuery.push({
-    //     $or: [{
-    //       title: {
-    //         like: "%" + searchText + "%"
-    //       }
-    //     }
-    //     ]
-    //   })
-    // }
-
-    // if (filters && filters.length > 0) {
-
-    // }
-
+  async handleRoleListing(data: Pagination): Promise<Attributes<InstanceType<typeof Role>>[] | []> {
+    let [query, limit, offset]: [FindOptions, number, number] = CommonService.generateListingQuery(data, ['title']);
     if (this.req.currentUser?.Role?.staticKey !== "super-admin") {
-      query['createdBy'] = this.req.currentUser?._id;
-      query['updatedBy'] = this.req.currentUser?._id;
+      let currentUser = this.req.currentUser._id;
+      query = { ...query, where: { ...query.where, createdBy: currentUser, updatedBy: currentUser } }
     }
 
-    const roles: InstanceType<typeof Role>[] = await Role.findAll({ where: query, limit, offset: skip });
+    const roles: InstanceType<typeof Role>[] = await this.Repository.getListingData(Role, query, {}, { limit, offset: offset });
+    return roles;
   }
 
 }

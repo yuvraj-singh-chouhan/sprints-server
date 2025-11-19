@@ -35,5 +35,13 @@
 	"VariantProduct is not associated to Product!": "VariantProduct is not associated to Product!",
 	"User is not associated to Product!": "User is not associated to Product!",
 	"Invalid value { productId": " '9b120979-d9ff-4e08-8416-2969a66cb314' }",
-	"column \"ProductId\" does not exist": "column \"ProductId\" does not exist"
+	"column \"ProductId\" does not exist": "column \"ProductId\" does not exist",
+	"\"permissions\" does not contain 1 required value(s)": "\"permissions\" does not contain 1 required value(s)",
+	"i18n is not defined": "i18n is not defined",
+	"invalid input syntax for type uuid": " \"sdf\"",
+	"\"permissions\" is required": "\"permissions\" is required",
+	"ROLE_UPDATED": "ROLE_UPDATED",
+	"Not Found": "Not Found",
+	"\"title\" is required": "\"title\" is required",
+	"WHERE parameter \"_id\" has invalid \"undefined\" value": "WHERE parameter \"_id\" has invalid \"undefined\" value"
 }

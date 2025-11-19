@@ -10,5 +10,6 @@ export interface ProductVariant extends Attributes<InstanceType<typeof Product>>
 export type Pagination = {
   page: number,
   pageSize: number,
+  searchText: string,
   filter: Attributes<InstanceType<typeof Product> | InstanceType<typeof Variant> | InstanceType<typeof VariantTemplate> | InstanceType<typeof Category> | InstanceType<typeof Role> | InstanceType<typeof ProductItem>>
 }

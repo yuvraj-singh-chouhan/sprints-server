@@ -4,7 +4,7 @@ import { Model, ModelAttributes, ModelStatic, Sequelize } from "sequelize";
 import path from "path";
 import config from "./config";
 
-import { Product } from "../modules/Product/Model"
+import { Product, ProductItem } from "../modules/Product/Model"
 import { Variant, VariantProduct, VariantTemplate } from "../modules/Variant/Model"
 import { Permission, Role } from "../modules/Roles/Model"
 import { User } from "../modules/Users/Model"
@@ -37,7 +37,8 @@ interface dbModels {
   Category: ModelStatic<Category>,
   VariantProduct: ModelStatic<VariantProduct>
   Cart: ModelStatic<Cart>,
-  CartItem: ModelStatic<CartItem>
+  CartItem: ModelStatic<CartItem>,
+  ProductItem: ModelStatic<ProductItem>
 }
 
 
