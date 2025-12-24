@@ -11,6 +11,7 @@ import { User } from "../modules/Users/Model"
 import { AuthenticationToken } from "../modules/Authentication/Model"
 import { Category } from "../modules/Category/Model"
 import { Cart, CartItem } from '../modules/Cart/Model';
+import { Wishlist, WishlistItem } from '../modules/Wishlist/Model';
 
 const db_name: string = config.db_name!;
 const db_user: string = config.db_user!;
@@ -39,6 +40,8 @@ interface dbModels {
   Cart: ModelStatic<Cart>,
   CartItem: ModelStatic<CartItem>,
   ProductItem: ModelStatic<ProductItem>
+  Wishlist: ModelStatic<Wishlist>
+  WishlistItem: ModelStatic<WishlistItem>
 }
 
 

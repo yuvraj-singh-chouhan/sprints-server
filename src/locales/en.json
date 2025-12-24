@@ -43,5 +43,6 @@
 	"ROLE_UPDATED": "ROLE_UPDATED",
 	"Not Found": "Not Found",
 	"\"title\" is required": "\"title\" is required",
-	"WHERE parameter \"_id\" has invalid \"undefined\" value": "WHERE parameter \"_id\" has invalid \"undefined\" value"
+	"WHERE parameter \"_id\" has invalid \"undefined\" value": "WHERE parameter \"_id\" has invalid \"undefined\" value",
+	"Cannot read properties of undefined (reading 'findOne')": "Cannot read properties of undefined (reading 'findOne')"
 }

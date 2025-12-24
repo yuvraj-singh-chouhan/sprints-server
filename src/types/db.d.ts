@@ -5,6 +5,7 @@ import type { Permission, Role } from "../modules/Roles/Model"
 import type { User } from "../modules/Users/Model"
 import type { AuthenticationToken } from "../modules/Authentication/Model"
 import type { Category } from "../modules/Category/Model"
+import { Wishlist, WishlistItem } from "../modules/Wishlist/Model"
 
 interface dbModels {
   Product: Model<Product>
@@ -17,6 +18,8 @@ interface dbModels {
   AuthenticationToken: Model<AuthenticationToken>,
   Category: Model<Category>,
   VariantProduct: ModelStatic<VariantProduct>
+  WishList: ModelStatic<Wishlist>
+  WishListItem: ModelStatic<WishlistItem>
 }
 
 export interface Database {

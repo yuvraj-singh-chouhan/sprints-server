@@ -1,5 +1,5 @@
 import { isEmpty } from "lodash";
-import { QueryTypes, CreationAttributes, FindOptions, InferAttributes, InferCreationAttributes, Model, ModelStatic, WhereOptions, Attributes } from "sequelize";
+import { FindOptions, Model, ModelStatic, WhereOptions, Attributes } from "sequelize";
 import { MakeNullishOptional } from "sequelize/types/utils";
 
 class BaseRepository{
@@ -50,7 +50,7 @@ class BaseRepository{
         ...(isEmpty(query.where) ? {} : query),
         ...(isEmpty(paginationOptions) ? {} : paginationOptions)
       }
-      console.log({queryObj})
+
       const data = await Model.findAll(queryObj);
       return data;
     } catch (error) {
@@ -62,9 +62,7 @@ class BaseRepository{
 
   async getDetails<T extends Model>(Model: ModelStatic<T>, query: FindOptions<T>, projection?: any){
     try{
-      console.log("query", query);
       const data = await Model.findOne(query);
-      console.log(data);  
       return data;
     }catch(error){
       console.log("Error in getDetais", error);
