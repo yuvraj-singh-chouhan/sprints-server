@@ -7,10 +7,10 @@ if (config.NODE_ENV !== "test") {
   console.log("*******************", config.NODE_ENV);
   (async () => {
     await databaseConnection();
-    // if (config.NODE_ENV !== "test") {
-    //   const seed = new Seed();
-    //   await seed.sync();
-    // }
+    if (config.NODE_ENV !== "test") {
+      const seed = new Seed();
+      await seed.sync();
+    }
 
     await sequelizeConnection.sync({ alter: true });
     const app = expressConfig();

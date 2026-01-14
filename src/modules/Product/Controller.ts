@@ -6,7 +6,7 @@ import { Attributes } from "sequelize";
 import { db } from "../../config/sequelize";
 import { HTTP_CODE } from "../../services/Global/constant";
 
-const { Product } = db;
+const { Product, ProductItem } = db;
 
 export default class ProductController extends BaseController {
   constructor(req: Request, res: Response, next: NextFunction) {
@@ -22,7 +22,6 @@ export default class ProductController extends BaseController {
       const data = this.req.body;
       const processableBody: string[] = [
         "name",
-        "sku",
         "description",
         "price",
         "salePrice",
@@ -35,11 +34,13 @@ export default class ProductController extends BaseController {
         "meta_description",
         "meta_keywords",
         "url_slug",
+        "quantity",
         "variant_ids",
         "variant_template_id",
+        "_id"
       ]
-      const processedbody = CommonService.processBody(processableBody, this.req.body);
-      const response: Attributes<InstanceType<typeof Product>> | null = await new ProductService(this.req).addProduct(processedbody);
+      const processedbody = CommonService.processBody(processableBody, data);
+      const response: Attributes<InstanceType<typeof ProductItem>> | null = await new ProductService(this.req).addProduct(processedbody);
       CommonService.handleResponse(this.res, "", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response)
     } catch (error) {
       this.next(error);

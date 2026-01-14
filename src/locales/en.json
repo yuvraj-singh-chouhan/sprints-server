@@ -44,5 +44,10 @@
 	"Not Found": "Not Found",
 	"\"title\" is required": "\"title\" is required",
 	"WHERE parameter \"_id\" has invalid \"undefined\" value": "WHERE parameter \"_id\" has invalid \"undefined\" value",
-	"Cannot read properties of undefined (reading 'findOne')": "Cannot read properties of undefined (reading 'findOne')"
+	"Cannot read properties of undefined (reading 'findOne')": "Cannot read properties of undefined (reading 'findOne')",
+	"\"SKU\" is required": "\"SKU\" is required",
+	"\"price\" must be a string": "\"price\" must be a string",
+	"\"url_slug\" is required": "\"url_slug\" is required",
+	"notNull Violation": " ProductItem.quantity cannot be null",
+	"\"quantitiy\" is not allowed": "\"quantitiy\" is not allowed"
 }

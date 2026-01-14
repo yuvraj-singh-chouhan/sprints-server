@@ -168,7 +168,7 @@ export default (sequelizeConnection: Sequelize) => {
    * Variant associations
    *************************************/
     models.Variant.belongsTo(models.VariantTemplate, { foreignKey: 'variant_template_id', targetKey: '_id' });
-    models.Variant.belongsToMany(models.Product, {
+    models.Variant.belongsToMany(models.ProductItem, {
       through: models.VariantProduct,
       foreignKey: "variant_id",
       as: "products",
