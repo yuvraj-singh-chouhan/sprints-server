@@ -2,7 +2,7 @@ import { Attributes, CreationAttributes, WhereOptions } from "sequelize";
 import BaseRepository from "../Base/Repository";
 import { db } from "../../config/sequelize";
 
-const { Product, Cart, CartItem } = db;
+const { Cart, CartItem } = db;
 class CartRepository extends BaseRepository {
 
   async createCart(data: CreationAttributes<InstanceType<typeof Cart>>): Promise<Attributes<InstanceType<typeof Cart>> | null> {

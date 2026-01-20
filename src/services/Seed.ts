@@ -17,9 +17,7 @@ class Seed {
             title: role,
             staticKey,
             permissions: [],
-            isDefault: true,
-            createdBy: "",
-            updatedBy: ""
+            isDefault: true
           });
         }
       }

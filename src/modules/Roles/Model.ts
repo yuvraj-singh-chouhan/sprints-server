@@ -9,8 +9,8 @@ export class Role extends Model<InferAttributes<Role>, InferCreationAttributes<R
   declare staticKey: CreationOptional<string>;
   declare permissions: ForeignKey<Array<Permission["_id"]>>;
   declare isDefault: CreationOptional<boolean>;
-  declare createdBy: string;
-  declare updatedBy: string;
+  declare createdBy: CreationOptional<string>;
+  declare updatedBy: CreationOptional<string>;
   declare isDeleted: CreationOptional<boolean>;
   declare status: CreationOptional<boolean>;
   declare createdAt: CreationOptional<Date>;

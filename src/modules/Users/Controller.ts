@@ -89,6 +89,7 @@ class UserController extends BaseController{
       }
 
       const newUser: InferAttributes<InstanceType<typeof User>> | null = await Service.registerUser(processedData);
+      console.log(newUser)
       if(newUser){
         return CommonService.handleResponse(this.res, "CREATED_SUCCESSFULLY", HTTP_CODE.RESOURCE_CREATED_CODE, HTTP_CODE.SUCCESS);
       }

@@ -35,7 +35,7 @@ class VariantRepository extends BaseRepository {
     }
     catch (error) {
       console.log("Error in updateVariantTemplate", error);
-      throw error;
+      throw error;  
     }
   }
 
