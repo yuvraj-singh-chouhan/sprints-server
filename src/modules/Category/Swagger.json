@@ -1,0 +1,165 @@
+{
+    "paths": {
+        "/api/catrogory/add": {
+            "post": {
+                "tags": [
+                    "Cateogory"
+                ],
+                "summary": "Create a new catrogory",
+                "description": "Create a new category",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/addCategoryRequest"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/addCategoryResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/categories": {
+            "post": {
+                "tags": [
+                    "Cateogory"
+                ],
+                "summary": "Create a catrogory listing",
+                "description": "Create a new category listings",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/listingRequest"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/addCategoryResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "addCategoryRequest": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "example": "Footwear"
+                },
+                "parentCategory_id": {
+                    "type": "string",
+                    "example": "48999e92-e16d-4fe1-9081-aa300ca0b3e0"
+                }
+            }
+        },
+        "addCategoryResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "message": {
+                    "type": "string",
+                    "example": "successfull"
+                },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "_id": {
+                            "type": "string",
+                            "example": "48999e92-e16d-4fe1-9081-aa300ca0b3e0"
+                        },
+                        "isMainCategory": {
+                            "type": "boolean",
+                            "example": true
+                        },
+                        "title": {
+                            "type": "string",
+                            "example": "Footwear"
+                        },
+                        "parentCategory_id": {
+                            "type": "string",
+                            "example": "48999e92-e16d-4fe1-9081-aa300ca0b3e0"
+                        },
+                        "staticKey": {
+                            "type": "string",
+                            "example": "footwear"
+                        }
+                    }
+                }
+            }
+        },
+        "listingRequest": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "number",
+                    "example": 1
+                },
+                "pageSize": {
+                    "type": "number",
+                    "example": 25
+                },
+                "filters": {
+                    "type": "array",
+                    "example": [
+                        {
+                            "title": "Footwear"
+                        }
+                    ]
+                },
+                "searchText": {
+                    "type": "string",
+                    "example": "Footwear"
+                }
+            }
+        },
+        "listingResponse": {
+            "type": "object",
+            "properties": {
+                "success": true,
+                "message": "successfull",
+                "data": {
+                    "type": "array",
+                    "example": [
+                        {
+                            "schenma": {
+                                "$ref": "#/definitions/addCategoryResponse"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

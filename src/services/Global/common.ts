@@ -54,7 +54,7 @@ class CommonService{
     const { page, pageSize, searchText, filters } = body;
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
-    const query: WhereOptions = { where: {} };
+    let query: WhereOptions = { where: {}};
 
     if(filters && filters.length > 0){
       const andQuery = this.constructFilterQuery(filters);
@@ -70,8 +70,8 @@ class CommonService{
 
   static generateSearchText(searchabelField: string[], searchText: string): WhereOptions{
     let orQuery: WhereOptions = searchabelField.map((field: string) => ({
-        [field]: {
-          [Op.iLike]: `%${searchText.trim()}%`
+        [Op.iLike]: {
+          [field]: `%${searchText.trim()}%`
         }
       })
     )
@@ -79,28 +79,28 @@ class CommonService{
   }
 
   static constructFilterQuery<T>(filters: T[]): WhereOptions {
-    let query: WhereOptions = {};
+    let query = [];
     for (let filter of filters) {
       const obj = filter;
       for (let k in filter) {
-        if (Array.isArray(obj[k])) [
-          query["where"] = {
-            [k]: {
-              [Op.in]: obj[k]
+        if (Array.isArray(obj[k])) {
+          query.push( {
+            [Op.in]: {
+              [k]: obj[k]
             }
           }
-        ]
+          )
+        }
         else {
-          query['where'] = {
-            ...query.where,
-            [k]: {
-              [Op.eq]: obj[k]
+          query.push( {
+            [Op.eq]: {
+              [k]: obj[k]
             }
-          }
+          })
         }
       }
     }
-    return query;
+    return {[Op.and]: query};
   }
 
 }

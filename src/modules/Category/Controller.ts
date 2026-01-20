@@ -62,7 +62,7 @@ export default class CategoryController extends BaseController{
     try{
       const { id } = this.req.params;
       const response: number | Error = await new Service().handleDeleteCategory(id);
-      return CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS);
+      return CommonService.handleResponse(this.res, "SUCCESS", HTTP_CODE.SUCCESS_CODE, HTTP_CODE.SUCCESS, response);
     } catch(error){
       console.log("Error in deleteCategory", error);
       this.next(error);

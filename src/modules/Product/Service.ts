@@ -106,7 +106,7 @@ export default class ProductService {
     throw new Error(i18n.__("FAILED_TO_UPDATE_DATA"));
   }
 
-  async handleProductDetails(id: string): Promise<Attributes<InstanceType<typeof Product>> | null> {
+  async handleProductDetails(id: string | string[]): Promise<Attributes<InstanceType<typeof Product>> | null> {
     const query: FindOptions = {
       where: { _id: id },
       include: [

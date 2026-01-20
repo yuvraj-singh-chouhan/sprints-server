@@ -49,5 +49,11 @@
 	"\"price\" must be a string": "\"price\" must be a string",
 	"\"url_slug\" is required": "\"url_slug\" is required",
 	"notNull Violation": " ProductItem.quantity cannot be null",
-	"\"quantitiy\" is not allowed": "\"quantitiy\" is not allowed"
+	"\"quantitiy\" is not allowed": "\"quantitiy\" is not allowed",
+	"INVALID_TOKEN": "INVALID_TOKEN",
+	"insert or update on table \"variants\" violates foreign key constraint \"variants_variant_template_id_fkey\"": "insert or update on table \"variants\" violates foreign key constraint \"variants_variant_template_id_fkey\"",
+	"\"variant_id\" is not allowed": "\"variant_id\" is not allowed",
+	"Variant is not associated to Product!": "Variant is not associated to Product!",
+	"Expected ',' or '}' after property value in JSON at position 12 (line 3 column 1)": "Expected ',' or '}' after property value in JSON at position 12 (line 3 column 1)",
+	"Unterminated string in JSON at position 26 (line 1 column 27)": "Unterminated string in JSON at position 26 (line 1 column 27)"
 }

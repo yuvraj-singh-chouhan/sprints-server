@@ -11,7 +11,7 @@ export default function(app: Application){
     await categoryObj.addCategory();
   });
 
-  router.post("/category/listing", Validator.validateCategoryListing, async (req: Request, res: Response, next: NextFunction) => {
+  router.post("/categories", Validator.validateCategoryListing, async (req: Request, res: Response, next: NextFunction) => {
     const categoryObj: CategoryController = new CategoryController(req, res, next);
     await categoryObj.categoryListing();
   })
